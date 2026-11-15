@@ -1,0 +1,2189 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0">
+<meta name="theme-color" content="#0f172a">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="GeoAnalog Space">
+<link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='14' fill='%230f172a'/%3E%3Ccircle cx='24' cy='34' r='13' fill='%232980b9'/%3E%3Ccircle cx='42' cy='28' r='12' fill='%23c0392b'/%3E%3C/svg%3E">
+<title>GeoAnalog Space · Parys Mountain ↔ Mawrth Vallis (NASA Space Apps)</title>
+<style>
+  :root {
+      --bg-page: radial-gradient(circle at top, #0f172a 0%, #050811 100%);
+      --bg-card: rgba(15, 23, 42, 0.94);
+      --bg-subcard: #1e293b;
+      --bg-subcard-hover: #263349;
+      --bg-pill: #0f172a;
+      --border-main: rgba(148, 163, 184, 0.24);
+      --border-accent: rgba(56, 189, 248, 0.35);
+      --text-primary: #f8fafc;
+      --text-secondary: #cbd5e1;
+      --text-muted: #94a3b8;
+      --accent-blue: #38bdf8;
+      --shadow-card: 0 12px 30px rgba(0, 0, 0, 0.45);
+  }
+
+  [data-theme="light"] {
+      --bg-page: linear-gradient(180deg, #f1f5f9 0%, #e2e8f0 100%);
+      --bg-card: #ffffff;
+      --bg-subcard: #f8fafc;
+      --bg-subcard-hover: #f1f5f9;
+      --bg-pill: #e2e8f0;
+      --border-main: #cbd5e1;
+      --border-accent: #0284c7;
+      --text-primary: #0f172a;
+      --text-secondary: #334155;
+      --text-muted: #475569;
+      --accent-blue: #0284c7;
+      --shadow-card: 0 8px 24px rgba(15, 23, 42, 0.08);
+  }
+
+  * { box-sizing: border-box; }
+
+  body {
+      margin: 0;
+      font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+      background: var(--bg-page);
+      color: var(--text-primary);
+      transition: background 0.3s ease, color 0.3s ease;
+  }
+
+  .container {
+      max-width: 1640px;
+      margin: 0 auto;
+      padding: 14px 18px 28px 18px;
+  }
+
+  .scroll-row {
+      display: flex;
+      flex-wrap: nowrap;
+      overflow-x: auto;
+      gap: 9px;
+      padding-bottom: 6px;
+      scroll-behavior: smooth;
+      -webkit-overflow-scrolling: touch;
+      scrollbar-width: thin;
+      scrollbar-color: var(--accent-blue) transparent;
+  }
+  .scroll-row::-webkit-scrollbar { height: 5px; }
+  .scroll-row::-webkit-scrollbar-track { background: transparent; }
+  .scroll-row::-webkit-scrollbar-thumb {
+      background: rgba(56, 189, 248, 0.45);
+      border-radius: 999px;
+  }
+
+  .header-panel {
+      background: var(--bg-card);
+      border: 1px solid var(--border-accent);
+      border-radius: 16px;
+      padding: 15px 20px;
+      margin-bottom: 12px;
+      box-shadow: var(--shadow-card);
+  }
+
+  .header-top {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: space-between;
+      align-items: center;
+      gap: 12px;
+  }
+
+  .status-row {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      gap: 7px;
+      margin-bottom: 5px;
+  }
+
+  .badge-mission {
+      display: inline-block;
+      background: rgba(56, 189, 248, 0.14);
+      color: var(--accent-blue);
+      border: 1px solid var(--border-accent);
+      padding: 3px 10px;
+      border-radius: 999px;
+      font-size: 10.2px;
+      font-weight: 700;
+      letter-spacing: 0.7px;
+      text-transform: uppercase;
+  }
+
+  .badge-device {
+      display: inline-block;
+      background: rgba(16, 185, 129, 0.15);
+      color: #34d399;
+      border: 1px solid rgba(52, 211, 153, 0.4);
+      padding: 3px 9px;
+      border-radius: 999px;
+      font-size: 10px;
+      font-weight: 700;
+  }
+
+  .title {
+      font-size: 21px;
+      font-weight: 800;
+      margin: 0;
+      color: var(--text-primary);
+  }
+
+  .subtitle {
+      font-size: 12.5px;
+      color: var(--text-muted);
+      margin-top: 3px;
+  }
+
+  .controls-right {
+      display: flex;
+      gap: 8px;
+      flex-wrap: wrap;
+  }
+
+  .teleport-wrap {
+      margin-top: 12px;
+      padding-top: 10px;
+      border-top: 1px solid var(--border-main);
+      display: flex;
+      align-items: center;
+      gap: 10px;
+  }
+
+  .teleport-label {
+      font-size: 10.8px;
+      font-weight: 800;
+      color: var(--text-muted);
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      white-space: nowrap;
+  }
+
+  .btn-fly {
+      background: var(--bg-subcard);
+      color: var(--text-primary);
+      border: 1px solid var(--border-main);
+      border-radius: 999px;
+      padding: 6px 13px;
+      font-size: 11.6px;
+      font-weight: 600;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      white-space: nowrap;
+      flex-shrink: 0;
+      transition: all 0.18s ease;
+  }
+
+  .btn-fly:hover {
+      background: var(--bg-subcard-hover);
+      border-color: var(--accent-blue);
+      transform: translateY(-1px);
+  }
+
+  .btn-active {
+      background: linear-gradient(90deg, #0284c7, #4f46e5) !important;
+      border-color: #7dd3fc !important;
+      color: #ffffff !important;
+  }
+
+  .dot {
+      width: 10px;
+      height: 10px;
+      border-radius: 50%;
+      display: inline-block;
+      border: 1.5px solid #fff;
+      flex-shrink: 0;
+  }
+
+  .legend-bar {
+      background: var(--bg-card);
+      border: 1px solid var(--border-main);
+      border-radius: 12px;
+      padding: 8px 14px;
+      margin-bottom: 12px;
+      box-shadow: var(--shadow-card);
+  }
+
+  .legend-item {
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+      font-size: 11.2px;
+      color: var(--text-secondary);
+      white-space: nowrap;
+      flex-shrink: 0;
+      padding-right: 8px;
+  }
+
+  .mobile-switcher {
+      display: none;
+      gap: 8px;
+      margin-bottom: 10px;
+      background: var(--bg-card);
+      border: 1px solid var(--border-main);
+      padding: 7px 10px;
+      border-radius: 12px;
+      justify-content: center;
+  }
+
+  .maps-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 14px;
+      width: 100%;
+  }
+
+  .maps-grid.single-earth { grid-template-columns: 1fr; }
+  .maps-grid.single-earth .map-card.mars { display: none; }
+
+  .maps-grid.single-mars { grid-template-columns: 1fr; }
+  .maps-grid.single-mars .map-card.earth { display: none; }
+
+  .maps-grid.stacked { grid-template-columns: 1fr; }
+
+  .map-card {
+      height: 660px;
+      display: flex;
+      flex-direction: column;
+      border-radius: 15px;
+      overflow: hidden;
+      background: #141824;
+      box-shadow: var(--shadow-card);
+  }
+  .map-card.earth { border: 2px solid #2980b9; }
+  .map-card.mars  { border: 2px solid #c0392b; }
+
+  .map-header {
+      padding: 10px 15px;
+      color: white;
+      font-weight: 700;
+      font-size: 13.5px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 8px;
+  }
+  .map-header.earth { background: linear-gradient(90deg, #154360, #2980b9); }
+  .map-header.mars  { background: linear-gradient(90deg, #78281f, #c0392b); }
+
+  .map-frame {
+      flex: 1;
+      width: 100%;
+      border: none;
+  }
+
+  .tele-card {
+      min-width: 285px;
+      flex: 1 0 285px;
+      background: var(--bg-card);
+      border: 1px solid var(--border-accent);
+      border-radius: 13px;
+      padding: 12px 15px;
+      box-shadow: var(--shadow-card);
+  }
+  .tele-title {
+      font-size: 11px;
+      font-weight: 800;
+      text-transform: uppercase;
+      letter-spacing: 0.6px;
+      color: var(--accent-blue);
+      margin-bottom: 4px;
+  }
+  .tele-val {
+      font-size: 14.8px;
+      font-weight: 800;
+      color: var(--text-primary);
+      margin-bottom: 4px;
+  }
+  .tele-desc {
+      font-size: 11.3px;
+      color: var(--text-secondary);
+      line-height: 1.42;
+  }
+
+  .expert-section {
+      margin-top: 14px;
+      background: var(--bg-card);
+      border: 1px solid var(--border-main);
+      border-radius: 16px;
+      padding: 16px 20px;
+      box-shadow: var(--shadow-card);
+  }
+
+  .section-header {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: space-between;
+      align-items: center;
+      gap: 8px;
+      margin-bottom: 12px;
+  }
+
+  .section-title {
+      font-size: 15px;
+      font-weight: 800;
+      color: var(--text-primary);
+  }
+
+  .expert-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 14px;
+      margin-bottom: 16px;
+  }
+
+  .chart-panel {
+      background: var(--bg-subcard);
+      border: 1px solid var(--border-main);
+      border-radius: 12px;
+      padding: 12px 14px;
+  }
+
+  .chart-caption {
+      font-size: 11.5px;
+      font-weight: 800;
+      color: var(--accent-blue);
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      margin-bottom: 8px;
+  }
+
+  .dim-card {
+      min-width: 300px;
+      max-width: 335px;
+      flex: 0 0 auto;
+      background: var(--bg-subcard);
+      border: 1px solid var(--border-main);
+      border-left-width: 4px;
+      border-radius: 11px;
+      padding: 11px 14px;
+      cursor: pointer;
+      transition: transform 0.18s ease, background 0.18s ease;
+  }
+  .dim-card:hover {
+      transform: translateY(-2px);
+      background: var(--bg-subcard-hover);
+  }
+  .dim-head {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 6px;
+      margin-bottom: 5px;
+      font-weight: 700;
+      font-size: 12.5px;
+      color: var(--text-primary);
+  }
+  .sim-pill {
+      font-size: 10px;
+      padding: 2px 8px;
+      border-radius: 999px;
+      background: var(--bg-pill);
+      color: var(--accent-blue);
+      font-weight: 700;
+      white-space: nowrap;
+  }
+  .dim-body {
+      font-size: 11.4px;
+      color: var(--text-secondary);
+      line-height: 1.44;
+  }
+
+  @media (max-width: 960px) {
+      .maps-grid { grid-template-columns: 1fr; }
+      .mobile-switcher { display: flex; }
+      .map-card { height: 500px; }
+      .expert-grid { grid-template-columns: 1fr; }
+  }
+
+  @media (max-width: 600px) {
+      .container { padding: 8px 8px 20px 8px; }
+      .header-panel { padding: 12px 13px; border-radius: 13px; }
+      .title { font-size: 16.5px; line-height: 1.25; }
+      .subtitle { font-size: 11.2px; }
+      .controls-right { width: 100%; }
+      .controls-right .btn-fly { flex: 1 1 auto; justify-content: center; padding: 6px 9px; font-size: 11px; }
+      .teleport-wrap { flex-direction: column; align-items: stretch; gap: 6px; }
+      .map-card { height: 430px; border-radius: 12px; }
+      .map-header { font-size: 11.8px; padding: 8px 11px; }
+      .tele-card { min-width: 255px; flex: 1 0 255px; }
+      .dim-card { min-width: 268px; max-width: 285px; }
+      .expert-section { padding: 12px; }
+  }
+</style>
+</head>
+<body data-theme="dark">
+<div class="container">
+  <!-- HEADER & MISSION CONTROLS -->
+  <div class="header-panel">
+    <div class="header-top">
+      <div>
+        <div class="status-row">
+          <span class="badge-mission">GeoAnalog Space · MRO CRISM · HiRISE · THEMIS · MOLA</span>
+          <span id="device-badge" class="badge-device">🖥️ Desktop Adaptive</span>
+          <span id="offline-badge" class="badge-device" style="background:rgba(56,189,248,0.14); color:#38bdf8; border-color:rgba(56,189,248,0.4);">🟢 Standalone HTML Ready</span>
+        </div>
+        <h1 class="title">Parys Mountain (Wales) ↔ Mawrth Vallis (Mars · Oyama &amp; McLaughlin)</h1>
+        <div class="subtitle">Multi-instrument comparison between the terrestrial Kuroko VMS deposit and Noachian–Hesperian acid-sulfate outcrops</div>
+      </div>
+      <div class="controls-right">
+        <button id="btn-theme" class="btn-fly" onclick="toggleTheme()">
+          ☀️ Sun Mode
+        </button>
+        <button id="btn-bw-mode" class="btn-fly" onclick="toggleBW()">
+          ◑ B&amp;W Topography
+        </button>
+        <button id="btn-crism-mode" class="btn-fly" onclick="toggleCrism()">
+          🔬 CRISM Boost
+        </button>
+        <button class="btn-fly" style="border-color:var(--accent-blue);" onclick="resetVista()">
+          🛰️ Reset
+        </button>
+      </div>
+    </div>
+
+    <!-- Single-Line Scrollable Analog Selector -->
+    <div class="teleport-wrap">
+      <span class="teleport-label">Jump to Analog Pair →</span>
+      <div class="scroll-row" style="flex:1;">
+        <button class="btn-fly" onclick="compararPar(53.3837, -4.3403, 17, 24.62, -19.15, 7)">
+          <span class="dot" style="background:#F1C40F;"></span> Jarosite (North Bend)
+        </button>
+        <button class="btn-fly" onclick="compararPar(53.3869, -4.3456, 17, 23.95, -18.35, 7)">
+          <span class="dot" style="background:#D35400;"></span> Goethite/Hematite &amp; Biosignatures
+        </button>
+        <button class="btn-fly" onclick="compararPar(53.3862, -4.3440, 17, 22.35, -17.85, 7)">
+          <span class="dot" style="background:#C0392B;"></span> Anglesite &amp; Sulfates (ExoMars)
+        </button>
+        <button class="btn-fly" onclick="compararPar(53.3873, -4.3486, 17, 24.72, -20.45, 7)">
+          <span class="dot" style="background:#E67E22;"></span> Quartz &amp; CRISM Silica (24.7° N)
+        </button>
+        <button class="btn-fly" onclick="compararPar(53.3845, -4.3392, 17, 24.82, -19.65, 7)">
+          <span class="dot" style="background:#3498DB;"></span> Fe/Mg → Al Clay Sequence
+        </button>
+        <button class="btn-fly" onclick="compararPar(53.3817, -4.3463, 17, 23.35, -18.18, 7)">
+          <span class="dot" style="background:#00B4D8;"></span> Paleo-Acid Water &amp; Climate
+        </button>
+        <button class="btn-fly" onclick="compararPar(53.3877, -4.3459, 17, 22.75, -18.02, 7)">
+          <span class="dot" style="background:#16A085;"></span> Benches, Machinery &amp; Robotics
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- SINGLE-LINE SCROLLABLE COLOR LEGEND -->
+  <div class="legend-bar">
+    <div class="scroll-row" style="align-items:center; padding-bottom:2px;">
+      <strong style="color:var(--text-muted); text-transform:uppercase; font-size:10.5px; white-space:nowrap; margin-right:6px;">Unified Earth–Mars Color Key:</strong>
+      <span class="legend-item"><span class="dot" style="background:#F1C40F;"></span> Jarosite</span>
+      <span class="legend-item"><span class="dot" style="background:#D35400;"></span> Goethite / Hematite</span>
+      <span class="legend-item"><span class="dot" style="background:#C0392B;"></span> Anglesite / Sulfates</span>
+      <span class="legend-item"><span class="dot" style="background:#E67E22;"></span> Quartz / Hydrated Silica</span>
+      <span class="legend-item"><span class="dot" style="background:#3498DB;"></span> Phyllosilicates Fe-Mg / Al</span>
+      <span class="legend-item"><span class="dot" style="background:#00B4D8;"></span> Acid Water / Climate</span>
+      <span class="legend-item"><span class="dot" style="background:#16A085;"></span> Topography / Machinery</span>
+      <span class="legend-item"><span class="dot" style="background:#27AE60;"></span> Biology / Biosignatures</span>
+      <span class="legend-item"><span class="dot" style="background:#8E44AD;"></span> Subsurface / Robotics</span>
+    </div>
+  </div>
+
+  <!-- MOBILE / TABLET ADAPTIVE PLANET SWITCHER -->
+  <div class="mobile-switcher">
+    <button id="tab-both" class="btn-fly btn-active" onclick="setMapLayout('stacked')">◫ Both Maps</button>
+    <button id="tab-earth" class="btn-fly" onclick="setMapLayout('single-earth')">🌍 Earth Only</button>
+    <button id="tab-mars" class="btn-fly" onclick="setMapLayout('single-mars')">🔴 Mars Only</button>
+  </div>
+
+  <!-- DUAL PLANETARY VIEWPORT -->
+  <div id="maps-grid" class="maps-grid">
+    <div class="map-card earth">
+      <div class="map-header earth">
+        <span>🌍 EARTH · Parys Mountain (Wales)</span>
+        <span style="font-size:10.8px; opacity:0.92;">53.386° N, 4.345° W</span>
+      </div>
+      <iframe id="frame-tierra" class="map-frame" srcdoc="&lt;!DOCTYPE html&gt;
+&lt;html&gt;
+&lt;head&gt;
+    
+    &lt;meta http-equiv=&quot;content-type&quot; content=&quot;text/html; charset=UTF-8&quot; /&gt;
+    &lt;script src=&quot;https://cdn.jsdelivr.net/npm/leaflet@1.9.3/dist/leaflet.js&quot;&gt;&lt;/script&gt;
+    &lt;script src=&quot;https://code.jquery.com/jquery-3.7.1.min.js&quot;&gt;&lt;/script&gt;
+    &lt;script src=&quot;https://cdn.jsdelivr.net/npm/bootstrap@5.2.2/dist/js/bootstrap.bundle.min.js&quot;&gt;&lt;/script&gt;
+    &lt;script src=&quot;https://cdnjs.cloudflare.com/ajax/libs/Leaflet.awesome-markers/2.0.2/leaflet.awesome-markers.js&quot;&gt;&lt;/script&gt;
+    &lt;link rel=&quot;stylesheet&quot; href=&quot;https://cdn.jsdelivr.net/npm/leaflet@1.9.3/dist/leaflet.css&quot;/&gt;
+    &lt;link rel=&quot;stylesheet&quot; href=&quot;https://cdn.jsdelivr.net/npm/bootstrap@5.2.2/dist/css/bootstrap.min.css&quot;/&gt;
+    &lt;link rel=&quot;stylesheet&quot; href=&quot;https://netdna.bootstrapcdn.com/bootstrap/3.0.0/css/bootstrap-glyphicons.css&quot;/&gt;
+    &lt;link rel=&quot;stylesheet&quot; href=&quot;https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.2.0/css/all.min.css&quot;/&gt;
+    &lt;link rel=&quot;stylesheet&quot; href=&quot;https://cdnjs.cloudflare.com/ajax/libs/Leaflet.awesome-markers/2.0.2/leaflet.awesome-markers.css&quot;/&gt;
+    &lt;link rel=&quot;stylesheet&quot; href=&quot;https://cdn.jsdelivr.net/gh/python-visualization/folium/folium/templates/leaflet.awesome.rotate.min.css&quot;/&gt;
+    
+            &lt;meta name=&quot;viewport&quot; content=&quot;width=device-width,
+                initial-scale=1.0, maximum-scale=1.0, user-scalable=no&quot; /&gt;
+            &lt;style&gt;
+                #map_56bd973a8a0a5ade6a1d8dc1841451bf {
+                    position: relative;
+                    width: 100.0%;
+                    height: 100.0%;
+                    left: 0.0%;
+                    top: 0.0%;
+                }
+                .leaflet-container { font-size: 1rem; }
+            &lt;/style&gt;
+
+            &lt;style&gt;html, body {
+                width: 100%;
+                height: 100%;
+                margin: 0;
+                padding: 0;
+            }
+            &lt;/style&gt;
+
+            &lt;style&gt;#map {
+                position:absolute;
+                top:0;
+                bottom:0;
+                right:0;
+                left:0;
+                }
+            &lt;/style&gt;
+
+            &lt;script&gt;
+                L_NO_TOUCH = false;
+                L_DISABLE_3D = false;
+            &lt;/script&gt;
+
+        
+    &lt;script src=&quot;https://cdn.jsdelivr.net/npm/leaflet.fullscreen@3.0.0/Control.FullScreen.min.js&quot;&gt;&lt;/script&gt;
+    &lt;link rel=&quot;stylesheet&quot; href=&quot;https://cdn.jsdelivr.net/npm/leaflet.fullscreen@3.0.0/Control.FullScreen.css&quot;/&gt;
+&lt;/head&gt;
+&lt;body&gt;
+    
+    
+&lt;style&gt;
+  html, body, .folium-map, .leaflet-container {
+      height: 100% !important;
+      width: 100% !important;
+      margin: 0 !important;
+      padding: 0 !important;
+      background-color: #141824 !important;
+      background-image:
+          linear-gradient(rgba(56, 189, 248, 0.08) 1px, transparent 1px),
+          linear-gradient(90deg, rgba(56, 189, 248, 0.08) 1px, transparent 1px) !important;
+      background-size: 40px 40px !important;
+  }
+  .earth-bw-topo {
+      filter: grayscale(100%) contrast(1.22) brightness(1.03);
+  }
+  .mars-crism-boost {
+      filter: contrast(1.36) saturate(1.65) hue-rotate(-8deg);
+  }
+  .mars-bw-topo {
+      filter: grayscale(100%) contrast(1.28) brightness(1.04);
+  }
+  body.crism-active .leaflet-tile-pane {
+      filter: contrast(1.38) saturate(1.70) brightness(0.95);
+      transition: filter 0.35s ease;
+  }
+  body.bw-active .leaflet-tile-pane {
+      filter: grayscale(100%) contrast(1.25);
+      transition: filter 0.35s ease;
+  }
+  .leaflet-popup-content-wrapper {
+      padding: 0 !important;
+      border-radius: 12px !important;
+      background: transparent !important;
+      box-shadow: none !important;
+  }
+  .leaflet-popup-content {
+      margin: 0 !important;
+      width: auto !important;
+  }
+  .leaflet-popup-tip {
+      background: #ffffff !important;
+  }
+  @media (max-width: 540px) {
+      .leaflet-popup-content-wrapper,
+      .leaflet-popup-content {
+          max-width: 84vw !important;
+      }
+      .popup-card-root {
+          width: 84vw !important;
+          font-size: 11.5px !important;
+      }
+  }
+&lt;/style&gt;
+&lt;script&gt;
+window.addEventListener(&quot;message&quot;, function(event) {
+    if (!event.data) return;
+    if (event.data.type === &quot;INVALIDATE_SIZE&quot;) {
+        for (var k in window) {
+            if (window[k] instanceof L.Map) { window[k].invalidateSize(); break; }
+        }
+        return;
+    }
+    if (event.data.type === &quot;TOGGLE_CRISM&quot;) {
+        document.body.classList.toggle(&quot;crism-active&quot;, event.data.enabled);
+        return;
+    }
+    if (event.data.type === &quot;TOGGLE_BW&quot;) {
+        document.body.classList.toggle(&quot;bw-active&quot;, event.data.enabled);
+        return;
+    }
+    if (event.data.type !== &quot;FLY_TO_ANALOG&quot;) return;
+    var mapObj = null;
+    for (var key in window) {
+        if (window[key] instanceof L.Map) {
+            mapObj = window[key];
+            break;
+        }
+    }
+    if (!mapObj) return;
+    mapObj.flyTo([event.data.lat, event.data.lon], event.data.zoom, {
+        animate: true,
+        duration: 1.2
+    });
+    setTimeout(function() {
+        var targetLatLng = L.latLng(event.data.lat, event.data.lon);
+        var bestLayer = null;
+        var minDist = Infinity;
+        mapObj.eachLayer(function(layer) {
+            if (layer instanceof L.CircleMarker &amp;&amp; layer.getLatLng &amp;&amp; layer.getRadius() &gt;= 10) {
+                var d = targetLatLng.distanceTo(layer.getLatLng());
+                if (d &lt; minDist) {
+                    minDist = d;
+                    bestLayer = layer;
+                }
+            }
+        });
+        if (bestLayer &amp;&amp; bestLayer.openPopup) {
+            bestLayer.openPopup();
+        }
+    }, 1250);
+});
+&lt;/script&gt;
+    
+            &lt;div class=&quot;folium-map&quot; id=&quot;map_56bd973a8a0a5ade6a1d8dc1841451bf&quot; &gt;&lt;/div&gt;
+        
+&lt;/body&gt;
+&lt;script&gt;
+    
+    
+            var map_56bd973a8a0a5ade6a1d8dc1841451bf = L.map(
+                &quot;map_56bd973a8a0a5ade6a1d8dc1841451bf&quot;,
+                {
+                    center: [53.3854, -4.3452],
+                    crs: L.CRS.EPSG3857,
+                    ...{
+  &quot;zoom&quot;: 15,
+  &quot;zoomControl&quot;: true,
+  &quot;preferCanvas&quot;: false,
+}
+
+                }
+            );
+            L.control.scale().addTo(map_56bd973a8a0a5ade6a1d8dc1841451bf);
+
+            
+
+        
+    
+            var tile_layer_f66966193de4da81d669ca96de208a60 = L.tileLayer(
+                &quot;https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}&quot;,
+                {
+  &quot;minZoom&quot;: 0,
+  &quot;maxZoom&quot;: 20,
+  &quot;maxNativeZoom&quot;: 19,
+  &quot;noWrap&quot;: false,
+  &quot;attribution&quot;: &quot;Esri World Imagery&quot;,
+  &quot;subdomains&quot;: &quot;abc&quot;,
+  &quot;detectRetina&quot;: false,
+  &quot;tms&quot;: false,
+  &quot;opacity&quot;: 1,
+}
+
+            );
+        
+    
+            tile_layer_f66966193de4da81d669ca96de208a60.addTo(map_56bd973a8a0a5ade6a1d8dc1841451bf);
+        
+    
+            var tile_layer_7671321a1472fd264844514c0ccce791 = L.tileLayer(
+                &quot;https://server.arcgisonline.com/ArcGIS/rest/services/World_Topo_Map/MapServer/tile/{z}/{y}/{x}&quot;,
+                {
+  &quot;minZoom&quot;: 0,
+  &quot;maxZoom&quot;: 20,
+  &quot;maxNativeZoom&quot;: 18,
+  &quot;noWrap&quot;: false,
+  &quot;attribution&quot;: &quot;Esri World Topographic Map&quot;,
+  &quot;subdomains&quot;: &quot;abc&quot;,
+  &quot;detectRetina&quot;: false,
+  &quot;tms&quot;: false,
+  &quot;opacity&quot;: 1,
+  &quot;className&quot;: &quot;earth-bw-topo&quot;,
+}
+
+            );
+        
+    
+            tile_layer_7671321a1472fd264844514c0ccce791.addTo(map_56bd973a8a0a5ade6a1d8dc1841451bf);
+        
+    
+            var tile_layer_5a97bf657fbd5b6cc38dc26c3355d775 = L.tileLayer(
+                &quot;https://server.arcgisonline.com/ArcGIS/rest/services/World_Street_Map/MapServer/tile/{z}/{y}/{x}&quot;,
+                {
+  &quot;minZoom&quot;: 0,
+  &quot;maxZoom&quot;: 20,
+  &quot;maxNativeZoom&quot;: 18,
+  &quot;noWrap&quot;: false,
+  &quot;attribution&quot;: &quot;Esri World Street \u0026 Trail Map&quot;,
+  &quot;subdomains&quot;: &quot;abc&quot;,
+  &quot;detectRetina&quot;: false,
+  &quot;tms&quot;: false,
+  &quot;opacity&quot;: 1,
+}
+
+            );
+        
+    
+            tile_layer_5a97bf657fbd5b6cc38dc26c3355d775.addTo(map_56bd973a8a0a5ade6a1d8dc1841451bf);
+        
+    
+            L.control.fullscreen(
+                {
+  &quot;position&quot;: &quot;topleft&quot;,
+  &quot;title&quot;: &quot;Full Screen&quot;,
+  &quot;titleCancel&quot;: &quot;Exit Full Screen&quot;,
+  &quot;forceSeparateButton&quot;: false,
+}
+            ).addTo(map_56bd973a8a0a5ade6a1d8dc1841451bf);
+        
+    
+            var feature_group_bb1ca4d83d7b5bf6501ce4919c91ac62 = L.featureGroup(
+                {
+}
+            );
+        
+    
+            var polygon_60d678599d87662ba0cd1596bea5bf4e = L.polygon(
+                [[53.3879, -4.3472], [53.3881, -4.3435], [53.3863, -4.3422], [53.3852, -4.3442], [53.3858, -4.3478], [53.3873, -4.3489]],
+                {&quot;bubblingMouseEvents&quot;: true, &quot;color&quot;: &quot;#16A085&quot;, &quot;dashArray&quot;: &quot;6, 4&quot;, &quot;dashOffset&quot;: null, &quot;fill&quot;: true, &quot;fillColor&quot;: &quot;#D35400&quot;, &quot;fillOpacity&quot;: 0.14, &quot;fillRule&quot;: &quot;evenodd&quot;, &quot;lineCap&quot;: &quot;round&quot;, &quot;lineJoin&quot;: &quot;round&quot;, &quot;noClip&quot;: false, &quot;opacity&quot;: 1.0, &quot;smoothFactor&quot;: 1.0, &quot;stroke&quot;: true, &quot;weight&quot;: 2}
+            ).addTo(feature_group_bb1ca4d83d7b5bf6501ce4919c91ac62);
+        
+    
+            polygon_60d678599d87662ba0cd1596bea5bf4e.bindTooltip(
+                `&lt;div&gt;
+                     Great Opencast Perimeter (~100 m depth · 15–28 m machinery haulage benches verified)
+                 &lt;/div&gt;`,
+                {
+  &quot;sticky&quot;: true,
+}
+            );
+        
+    
+            var poly_line_1cf44c156cb43cccc53ec35cdaa45f78 = L.polyline(
+                [[53.3855, -4.3455], [53.3838, -4.3458], [53.3822, -4.3461], [53.3806, -4.3452]],
+                {&quot;bubblingMouseEvents&quot;: true, &quot;color&quot;: &quot;#00B4D8&quot;, &quot;dashArray&quot;: null, &quot;dashOffset&quot;: null, &quot;fill&quot;: false, &quot;fillColor&quot;: &quot;#00B4D8&quot;, &quot;fillOpacity&quot;: 0.2, &quot;fillRule&quot;: &quot;evenodd&quot;, &quot;lineCap&quot;: &quot;round&quot;, &quot;lineJoin&quot;: &quot;round&quot;, &quot;noClip&quot;: false, &quot;opacity&quot;: 0.9, &quot;smoothFactor&quot;: 1.0, &quot;stroke&quot;: true, &quot;weight&quot;: 4}
+            ).addTo(feature_group_bb1ca4d83d7b5bf6501ce4919c91ac62);
+        
+    
+            poly_line_1cf44c156cb43cccc53ec35cdaa45f78.bindTooltip(
+                `&lt;div&gt;
+                     Dyffryn Adda Stream (Hyperacid Mine Drainage pH &lt; 2.5)
+                 &lt;/div&gt;`,
+                {
+  &quot;sticky&quot;: true,
+}
+            );
+        
+    
+            feature_group_bb1ca4d83d7b5bf6501ce4919c91ac62.addTo(map_56bd973a8a0a5ade6a1d8dc1841451bf);
+        
+    
+            var feature_group_93c8bbcfc5d547754a7885ef434b92b6 = L.featureGroup(
+                {
+}
+            );
+        
+    
+            var circle_marker_cea1b5d88dc8c399e552468858d6c582 = L.circleMarker(
+                [53.3837, -4.3403],
+                {&quot;bubblingMouseEvents&quot;: true, &quot;color&quot;: &quot;#ffffff&quot;, &quot;dashArray&quot;: null, &quot;dashOffset&quot;: null, &quot;fill&quot;: true, &quot;fillColor&quot;: &quot;#F1C40F&quot;, &quot;fillOpacity&quot;: 0.95, &quot;fillRule&quot;: &quot;evenodd&quot;, &quot;lineCap&quot;: &quot;round&quot;, &quot;lineJoin&quot;: &quot;round&quot;, &quot;opacity&quot;: 1.0, &quot;radius&quot;: 11.5, &quot;stroke&quot;: true, &quot;weight&quot;: 2.6}
+            ).addTo(feature_group_93c8bbcfc5d547754a7885ef434b92b6);
+        
+    
+        var popup_70bcf65befd68bc599e04f23dfa9cd69 = L.popup({
+  &quot;maxWidth&quot;: 400,
+});
+
+        
+            
+                var html_f467717d7c6d82d1c43c586a08ced86e = $(`&lt;div id=&quot;html_f467717d7c6d82d1c43c586a08ced86e&quot; style=&quot;width: 100.0%; height: 100.0%;&quot;&gt;     &lt;div class=&quot;popup-card-root&quot; style=&quot;font-family: &#x27;Segoe UI&#x27;, system-ui, -apple-system, sans-serif; width: 385px; max-width: 100%; font-size: 12.4px; line-height: 1.45; color: #1e293b; box-shadow: 0 12px 28px rgba(0,0,0,0.48); border-radius: 12px; overflow: hidden;&quot;&gt;         &lt;div style=&quot;background: linear-gradient(135deg, #F1C40F, #0f172a); color: white; padding: 10px 13px;&quot;&gt;             &lt;div style=&quot;display:flex; justify-content:space-between; align-items:center; gap:6px; margin-bottom:4px; flex-wrap:wrap;&quot;&gt;                 &lt;span style=&quot;font-size:9.3px; text-transform:uppercase; letter-spacing:0.6px; background:rgba(255,255,255,0.2); padding:2px 8px; border-radius:10px; font-weight:700;&quot;&gt;                     Geology &amp; Mineralogy                 &lt;/span&gt;                 &lt;span style=&quot;font-size:9.8px; background:#090d16; color:#38bdf8; border:1px solid #38bdf8; padding:2px 8px; border-radius:10px; font-weight:700; white-space:nowrap;&quot;&gt;                     Match: Very High (96%)                 &lt;/span&gt;             &lt;/div&gt;             &lt;div style=&quot;font-weight: 800; font-size: 13.8px;&quot;&gt;Mona Mine – Jarosite KFe₃(SO₄)₂(OH)₆&lt;/div&gt;             &lt;div style=&quot;font-size: 10.8px; opacity: 0.92; margin-top:2px;&quot;&gt;Crystalline ferric-potassium sulfate crusts&lt;/div&gt;         &lt;/div&gt;         &lt;div style=&quot;padding: 10px 13px; background: #ffffff; border: 1px solid #cbd5e1; border-top: none; border-radius: 0 0 12px 12px;&quot;&gt;                  &lt;svg viewBox=&quot;0 0 360 116&quot; width=&quot;100%&quot; style=&quot;background:#0f172a; border-radius:9px; margin-bottom:9px; border:1px solid #334155;&quot;&gt;       &lt;defs&gt;         &lt;linearGradient id=&quot;gJar1&quot; x1=&quot;0&quot; y1=&quot;0&quot; x2=&quot;1&quot; y2=&quot;1&quot;&gt;           &lt;stop offset=&quot;0%&quot; stop-color=&quot;#FEF08A&quot;/&gt;&lt;stop offset=&quot;50%&quot; stop-color=&quot;#EAB308&quot;/&gt;&lt;stop offset=&quot;100%&quot; stop-color=&quot;#854D0E&quot;/&gt;         &lt;/linearGradient&gt;         &lt;linearGradient id=&quot;gJar2&quot; x1=&quot;0&quot; y1=&quot;1&quot; x2=&quot;1&quot; y2=&quot;0&quot;&gt;           &lt;stop offset=&quot;0%&quot; stop-color=&quot;#CA8A04&quot;/&gt;&lt;stop offset=&quot;100%&quot; stop-color=&quot;#FEF9C3&quot;/&gt;         &lt;/linearGradient&gt;       &lt;/defs&gt;       &lt;text x=&quot;12&quot; y=&quot;16&quot; fill=&quot;#FDE047&quot; font-size=&quot;10&quot; font-weight=&quot;bold&quot; font-family=&quot;sans-serif&quot;&gt;JAROSITE · KFe₃(SO₄)₂(OH)₆ (HYPERACID WATER INDEX)&lt;/text&gt;       &lt;path d=&quot;M14,98 Q45,78 85,84 T145,98 Z&quot; fill=&quot;#451a03&quot; stroke=&quot;#78350f&quot; stroke-width=&quot;1&quot;/&gt;       &lt;polygon points=&quot;48,86 36,62 54,48 72,62 62,86&quot; fill=&quot;url(#gJar1)&quot; stroke=&quot;#fef08a&quot; stroke-width=&quot;0.9&quot;/&gt;       &lt;polygon points=&quot;74,88 66,56 86,40 104,58 92,88&quot; fill=&quot;url(#gJar2)&quot; stroke=&quot;#fef08a&quot; stroke-width=&quot;0.9&quot;/&gt;       &lt;polygon points=&quot;102,89 96,68 112,58 126,70 118,89&quot; fill=&quot;url(#gJar1)&quot; stroke=&quot;#fde047&quot; stroke-width=&quot;0.8&quot;/&gt;       &lt;text x=&quot;78&quot; y=&quot;110&quot; text-anchor=&quot;middle&quot; fill=&quot;#cbd5e1&quot; font-size=&quot;8&quot; font-family=&quot;sans-serif&quot;&gt;Trigonal habit · Vitreous luster&lt;/text&gt;       &lt;rect x=&quot;155&quot; y=&quot;22&quot; width=&quot;193&quot; height=&quot;84&quot; rx=&quot;6&quot; fill=&quot;#1e293b&quot; stroke=&quot;#475569&quot; stroke-width=&quot;1&quot;/&gt;       &lt;text x=&quot;164&quot; y=&quot;36&quot; fill=&quot;#f8fafc&quot; font-size=&quot;8.8&quot; font-weight=&quot;bold&quot; font-family=&quot;sans-serif&quot;&gt;MRO CRISM Spectrum (VNIR)&lt;/text&gt;       &lt;polyline fill=&quot;none&quot; stroke=&quot;#F1C40F&quot; stroke-width=&quot;2.2&quot; points=&quot;166,78 185,86 204,49 232,44 262,82 292,46 332,43&quot;/&gt;       &lt;circle cx=&quot;185&quot; cy=&quot;86&quot; r=&quot;3&quot; fill=&quot;#ef4444&quot;/&gt;&lt;circle cx=&quot;262&quot; cy=&quot;82&quot; r=&quot;3&quot; fill=&quot;#ef4444&quot;/&gt;       &lt;text x=&quot;172&quot; y=&quot;98&quot; fill=&quot;#94a3b8&quot; font-size=&quot;7.6&quot; font-family=&quot;sans-serif&quot;&gt;0.43 µm&lt;/text&gt;       &lt;text x=&quot;242&quot; y=&quot;98&quot; fill=&quot;#94a3b8&quot; font-size=&quot;7.6&quot; font-family=&quot;sans-serif&quot;&gt;0.91 µm (Fe³⁺)&lt;/text&gt;       &lt;text x=&quot;296&quot; y=&quot;68&quot; fill=&quot;#fde047&quot; font-size=&quot;8&quot; font-weight=&quot;bold&quot; font-family=&quot;sans-serif&quot;&gt;pH &amp;lt; 3.5&lt;/text&gt;     &lt;/svg&gt;                  &lt;div&gt;Yellowish &lt;b&gt;jarosite&lt;/b&gt; crusts and nodules across oxidized spoil heaps and historic copper precipitation ponds.&lt;/div&gt;             &lt;div style=&quot;margin-top:8px; background:#f1f5f9; border:1px solid #cbd5e1; border-radius:7px; padding:7px 9px; font-size:10.6px; color:#0f172a;&quot;&gt;                 &lt;div style=&quot;font-weight:800; color:#0369a1; margin-bottom:2px; text-transform:uppercase; font-size:9.3px;&quot;&gt;🛰️ Cross-Planetary Telemetry Fusion (MRO / THEMIS / MOLA ↔ Field)&lt;/div&gt;                 &lt;b&gt;Earth Field:&lt;/b&gt; Precipitates in hyperacid waters (pH 1.8–2.8).&lt;br&gt;&lt;b&gt;Mars (MRO CRISM):&lt;/b&gt; Diagnostic bands at &lt;b&gt;0.43 µm, 0.91 µm &amp;amp; 2.26 µm&lt;/b&gt; in the northern bend of Mawrth Vallis.             &lt;/div&gt;             &lt;div style=&quot;margin-top:7px; padding-top:5px; border-top:1px dashed #cbd5e1; font-size:10px; color:#64748b; display:flex; justify-content:space-between; flex-wrap:wrap; gap:4px;&quot;&gt;                 &lt;span&gt;&lt;b&gt;Source:&lt;/b&gt; Parys Underground Group (Minerals)&lt;/span&gt;                 &lt;span style=&quot;color:#F1C40F; font-weight:700;&quot;&gt;● Color-Synced&lt;/span&gt;             &lt;/div&gt;         &lt;/div&gt;     &lt;/div&gt;     &lt;/div&gt;`)[0];
+                popup_70bcf65befd68bc599e04f23dfa9cd69.setContent(html_f467717d7c6d82d1c43c586a08ced86e);
+            
+        
+
+        circle_marker_cea1b5d88dc8c399e552468858d6c582.bindPopup(popup_70bcf65befd68bc599e04f23dfa9cd69)
+        ;
+
+        
+    
+    
+            circle_marker_cea1b5d88dc8c399e552468858d6c582.bindTooltip(
+                `&lt;div&gt;
+                     [Geology &amp; Mineralogy] Mona Mine – Jarosite KFe₃(SO₄)₂(OH)₆
+                 &lt;/div&gt;`,
+                {
+  &quot;sticky&quot;: true,
+}
+            );
+        
+    
+            var circle_marker_4c7b1ba99603b4bec6dbeceff08007e9 = L.circleMarker(
+                [53.3869, -4.3456],
+                {&quot;bubblingMouseEvents&quot;: true, &quot;color&quot;: &quot;#ffffff&quot;, &quot;dashArray&quot;: null, &quot;dashOffset&quot;: null, &quot;fill&quot;: true, &quot;fillColor&quot;: &quot;#D35400&quot;, &quot;fillOpacity&quot;: 0.95, &quot;fillRule&quot;: &quot;evenodd&quot;, &quot;lineCap&quot;: &quot;round&quot;, &quot;lineJoin&quot;: &quot;round&quot;, &quot;opacity&quot;: 1.0, &quot;radius&quot;: 11.5, &quot;stroke&quot;: true, &quot;weight&quot;: 2.6}
+            ).addTo(feature_group_93c8bbcfc5d547754a7885ef434b92b6);
+        
+    
+        var popup_520cd058af589e33b665264f9ffbe63f = L.popup({
+  &quot;maxWidth&quot;: 400,
+});
+
+        
+            
+                var html_fc3ad691b9ccdc1defcba21a61d85e71 = $(`&lt;div id=&quot;html_fc3ad691b9ccdc1defcba21a61d85e71&quot; style=&quot;width: 100.0%; height: 100.0%;&quot;&gt;     &lt;div class=&quot;popup-card-root&quot; style=&quot;font-family: &#x27;Segoe UI&#x27;, system-ui, -apple-system, sans-serif; width: 385px; max-width: 100%; font-size: 12.4px; line-height: 1.45; color: #1e293b; box-shadow: 0 12px 28px rgba(0,0,0,0.48); border-radius: 12px; overflow: hidden;&quot;&gt;         &lt;div style=&quot;background: linear-gradient(135deg, #D35400, #0f172a); color: white; padding: 10px 13px;&quot;&gt;             &lt;div style=&quot;display:flex; justify-content:space-between; align-items:center; gap:6px; margin-bottom:4px; flex-wrap:wrap;&quot;&gt;                 &lt;span style=&quot;font-size:9.3px; text-transform:uppercase; letter-spacing:0.6px; background:rgba(255,255,255,0.2); padding:2px 8px; border-radius:10px; font-weight:700;&quot;&gt;                     Geology &amp; Mineralogy                 &lt;/span&gt;                 &lt;span style=&quot;font-size:9.8px; background:#090d16; color:#38bdf8; border:1px solid #38bdf8; padding:2px 8px; border-radius:10px; font-weight:700; white-space:nowrap;&quot;&gt;                     Match: Very High (96%)                 &lt;/span&gt;             &lt;/div&gt;             &lt;div style=&quot;font-weight: 800; font-size: 13.8px;&quot;&gt;Massive Iron Oxides (Goethite &amp; Hematite)&lt;/div&gt;             &lt;div style=&quot;font-size: 10.8px; opacity: 0.92; margin-top:2px;&quot;&gt;Fe³⁺-rich Gossan cap + Ferrihydrite&lt;/div&gt;         &lt;/div&gt;         &lt;div style=&quot;padding: 10px 13px; background: #ffffff; border: 1px solid #cbd5e1; border-top: none; border-radius: 0 0 12px 12px;&quot;&gt;                  &lt;svg viewBox=&quot;0 0 360 116&quot; width=&quot;100%&quot; style=&quot;background:#0f172a; border-radius:9px; margin-bottom:9px; border:1px solid #334155;&quot;&gt;       &lt;defs&gt;         &lt;radialGradient id=&quot;gGoeth&quot; cx=&quot;35%&quot; cy=&quot;35%&quot; r=&quot;65%&quot;&gt;           &lt;stop offset=&quot;0%&quot; stop-color=&quot;#FDBA74&quot;/&gt;&lt;stop offset=&quot;40%&quot; stop-color=&quot;#C2410C&quot;/&gt;&lt;stop offset=&quot;100%&quot; stop-color=&quot;#431407&quot;/&gt;         &lt;/radialGradient&gt;         &lt;radialGradient id=&quot;gHem&quot; cx=&quot;30%&quot; cy=&quot;30%&quot; r=&quot;70%&quot;&gt;           &lt;stop offset=&quot;0%&quot; stop-color=&quot;#E2E8F0&quot;/&gt;&lt;stop offset=&quot;45%&quot; stop-color=&quot;#7F1D1D&quot;/&gt;&lt;stop offset=&quot;100%&quot; stop-color=&quot;#1E1B18&quot;/&gt;         &lt;/radialGradient&gt;       &lt;/defs&gt;       &lt;text x=&quot;12&quot; y=&quot;16&quot; fill=&quot;#FB923C&quot; font-size=&quot;10&quot; font-weight=&quot;bold&quot; font-family=&quot;sans-serif&quot;&gt;GOETHITE (α-FeOOH) &amp;amp; HEMATITE (Fe₂O₃)&lt;/text&gt;       &lt;circle cx=&quot;54&quot; cy=&quot;62&quot; r=&quot;21&quot; fill=&quot;url(#gGoeth)&quot; stroke=&quot;#ea580c&quot; stroke-width=&quot;0.8&quot;/&gt;       &lt;circle cx=&quot;78&quot; cy=&quot;68&quot; r=&quot;18&quot; fill=&quot;url(#gGoeth)&quot; stroke=&quot;#ea580c&quot; stroke-width=&quot;0.8&quot;/&gt;       &lt;circle cx=&quot;65&quot; cy=&quot;48&quot; r=&quot;16&quot; fill=&quot;url(#gGoeth)&quot; stroke=&quot;#fdba74&quot; stroke-width=&quot;0.8&quot;/&gt;       &lt;text x=&quot;66&quot; y=&quot;104&quot; text-anchor=&quot;middle&quot; fill=&quot;#cbd5e1&quot; font-size=&quot;8&quot; font-family=&quot;sans-serif&quot;&gt;Botryoidal Goethite&lt;/text&gt;       &lt;ellipse cx=&quot;136&quot; cy=&quot;60&quot; rx=&quot;21&quot; ry=&quot;14&quot; transform=&quot;rotate(-18 136 60)&quot; fill=&quot;url(#gHem)&quot; stroke=&quot;#cbd5e1&quot; stroke-width=&quot;0.8&quot;/&gt;       &lt;ellipse cx=&quot;145&quot; cy=&quot;71&quot; rx=&quot;17&quot; ry=&quot;10&quot; transform=&quot;rotate(12 145 71)&quot; fill=&quot;url(#gHem)&quot; stroke=&quot;#94a3b8&quot; stroke-width=&quot;0.8&quot;/&gt;       &lt;text x=&quot;140&quot; y=&quot;104&quot; text-anchor=&quot;middle&quot; fill=&quot;#cbd5e1&quot; font-size=&quot;8&quot; font-family=&quot;sans-serif&quot;&gt;Specular Hematite&lt;/text&gt;       &lt;rect x=&quot;176&quot; y=&quot;23&quot; width=&quot;172&quot; height=&quot;82&quot; rx=&quot;6&quot; fill=&quot;#1e293b&quot; stroke=&quot;#D35400&quot; stroke-width=&quot;1&quot;/&gt;       &lt;text x=&quot;184&quot; y=&quot;38&quot; fill=&quot;#fdba74&quot; font-size=&quot;8.8&quot; font-weight=&quot;bold&quot; font-family=&quot;sans-serif&quot;&gt;CRISM + THEMIS Fusion&lt;/text&gt;       &lt;text x=&quot;184&quot; y=&quot;52&quot; fill=&quot;#e2e8f0&quot; font-size=&quot;8.1&quot; font-family=&quot;sans-serif&quot;&gt;• Fe³⁺ Band: 0.86 – 0.92 µm&lt;/text&gt;       &lt;text x=&quot;184&quot; y=&quot;66&quot; fill=&quot;#e2e8f0&quot; font-size=&quot;8.1&quot; font-family=&quot;sans-serif&quot;&gt;• THEMIS TI: 310–440 tiu (bedrock)&lt;/text&gt;       &lt;text x=&quot;184&quot; y=&quot;80&quot; fill=&quot;#e2e8f0&quot; font-size=&quot;8.1&quot; font-family=&quot;sans-serif&quot;&gt;• UV &amp;amp; cosmic radiation shield&lt;/text&gt;       &lt;text x=&quot;184&quot; y=&quot;94&quot; fill=&quot;#fb923c&quot; font-size=&quot;8&quot; font-weight=&quot;bold&quot; font-family=&quot;sans-serif&quot;&gt;• Primary biosignature matrix&lt;/text&gt;     &lt;/svg&gt;                  &lt;div&gt;&lt;b&gt;Goethite&lt;/b&gt; (α-FeOOH) and &lt;b&gt;hematite&lt;/b&gt; (α-Fe₂O₃) coating steep scarps in intense ocher, crimson, and purple hues.&lt;/div&gt;             &lt;div style=&quot;margin-top:8px; background:#f1f5f9; border:1px solid #cbd5e1; border-radius:7px; padding:7px 9px; font-size:10.6px; color:#0f172a;&quot;&gt;                 &lt;div style=&quot;font-weight:800; color:#0369a1; margin-bottom:2px; text-transform:uppercase; font-size:9.3px;&quot;&gt;🛰️ Cross-Planetary Telemetry Fusion (MRO / THEMIS / MOLA ↔ Field)&lt;/div&gt;                 &lt;b&gt;Earth Field:&lt;/b&gt; Supergene oxidation of Kuroko-type VMS deposit.&lt;br&gt;&lt;b&gt;Mars (CRISM + THEMIS):&lt;/b&gt; Ferric absorption &lt;b&gt;0.86–0.92 µm&lt;/b&gt; &amp;amp; high thermal inertia (310–440 tiu) facing Oyama Crater.             &lt;/div&gt;             &lt;div style=&quot;margin-top:7px; padding-top:5px; border-top:1px dashed #cbd5e1; font-size:10px; color:#64748b; display:flex; justify-content:space-between; flex-wrap:wrap; gap:4px;&quot;&gt;                 &lt;span&gt;&lt;b&gt;Source:&lt;/b&gt; Parys Underground Group (Geology)&lt;/span&gt;                 &lt;span style=&quot;color:#D35400; font-weight:700;&quot;&gt;● Color-Synced&lt;/span&gt;             &lt;/div&gt;         &lt;/div&gt;     &lt;/div&gt;     &lt;/div&gt;`)[0];
+                popup_520cd058af589e33b665264f9ffbe63f.setContent(html_fc3ad691b9ccdc1defcba21a61d85e71);
+            
+        
+
+        circle_marker_4c7b1ba99603b4bec6dbeceff08007e9.bindPopup(popup_520cd058af589e33b665264f9ffbe63f)
+        ;
+
+        
+    
+    
+            circle_marker_4c7b1ba99603b4bec6dbeceff08007e9.bindTooltip(
+                `&lt;div&gt;
+                     [Geology &amp; Mineralogy] Massive Iron Oxides (Goethite &amp; Hematite)
+                 &lt;/div&gt;`,
+                {
+  &quot;sticky&quot;: true,
+}
+            );
+        
+    
+            var circle_marker_aeabba4028f420e29ae7f97ac31ff617 = L.circleMarker(
+                [53.3862, -4.344],
+                {&quot;bubblingMouseEvents&quot;: true, &quot;color&quot;: &quot;#ffffff&quot;, &quot;dashArray&quot;: null, &quot;dashOffset&quot;: null, &quot;fill&quot;: true, &quot;fillColor&quot;: &quot;#C0392B&quot;, &quot;fillOpacity&quot;: 0.95, &quot;fillRule&quot;: &quot;evenodd&quot;, &quot;lineCap&quot;: &quot;round&quot;, &quot;lineJoin&quot;: &quot;round&quot;, &quot;opacity&quot;: 1.0, &quot;radius&quot;: 11.5, &quot;stroke&quot;: true, &quot;weight&quot;: 2.6}
+            ).addTo(feature_group_93c8bbcfc5d547754a7885ef434b92b6);
+        
+    
+        var popup_7e799be1a1d98ba498d82afe0ea3038e = L.popup({
+  &quot;maxWidth&quot;: 400,
+});
+
+        
+            
+                var html_80248ef246c9a84a99ec5ece439bf3f7 = $(`&lt;div id=&quot;html_80248ef246c9a84a99ec5ece439bf3f7&quot; style=&quot;width: 100.0%; height: 100.0%;&quot;&gt;     &lt;div class=&quot;popup-card-root&quot; style=&quot;font-family: &#x27;Segoe UI&#x27;, system-ui, -apple-system, sans-serif; width: 385px; max-width: 100%; font-size: 12.4px; line-height: 1.45; color: #1e293b; box-shadow: 0 12px 28px rgba(0,0,0,0.48); border-radius: 12px; overflow: hidden;&quot;&gt;         &lt;div style=&quot;background: linear-gradient(135deg, #C0392B, #0f172a); color: white; padding: 10px 13px;&quot;&gt;             &lt;div style=&quot;display:flex; justify-content:space-between; align-items:center; gap:6px; margin-bottom:4px; flex-wrap:wrap;&quot;&gt;                 &lt;span style=&quot;font-size:9.3px; text-transform:uppercase; letter-spacing:0.6px; background:rgba(255,255,255,0.2); padding:2px 8px; border-radius:10px; font-weight:700;&quot;&gt;                     Geology &amp; Mineralogy                 &lt;/span&gt;                 &lt;span style=&quot;font-size:9.8px; background:#090d16; color:#38bdf8; border:1px solid #38bdf8; padding:2px 8px; border-radius:10px; font-weight:700; white-space:nowrap;&quot;&gt;                     Match: Very High (95%)                 &lt;/span&gt;             &lt;/div&gt;             &lt;div style=&quot;font-weight: 800; font-size: 13.8px;&quot;&gt;Great Opencast – Anglesite (PbSO₄) &amp; Sulfides&lt;/div&gt;             &lt;div style=&quot;font-size: 10.8px; opacity: 0.92; margin-top:2px;&quot;&gt;World type locality · Galena, Pyrite, Chalcopyrite&lt;/div&gt;         &lt;/div&gt;         &lt;div style=&quot;padding: 10px 13px; background: #ffffff; border: 1px solid #cbd5e1; border-top: none; border-radius: 0 0 12px 12px;&quot;&gt;                  &lt;svg viewBox=&quot;0 0 360 116&quot; width=&quot;100%&quot; style=&quot;background:#0f172a; border-radius:9px; margin-bottom:9px; border:1px solid #334155;&quot;&gt;       &lt;defs&gt;         &lt;linearGradient id=&quot;gAng&quot; x1=&quot;0&quot; y1=&quot;0&quot; x2=&quot;1&quot; y2=&quot;1&quot;&gt;           &lt;stop offset=&quot;0%&quot; stop-color=&quot;#FFFFFF&quot;/&gt;&lt;stop offset=&quot;55%&quot; stop-color=&quot;#E2E8F0&quot;/&gt;&lt;stop offset=&quot;100%&quot; stop-color=&quot;#94A3B8&quot;/&gt;         &lt;/linearGradient&gt;       &lt;/defs&gt;       &lt;text x=&quot;12&quot; y=&quot;16&quot; fill=&quot;#FCA5A5&quot; font-size=&quot;10&quot; font-weight=&quot;bold&quot; font-family=&quot;sans-serif&quot;&gt;ANGLESITE (PbSO₄) &amp;amp; EVAPORITIC SULFATES&lt;/text&gt;       &lt;path d=&quot;M16,92 C22,46 135,46 146,92 Z&quot; fill=&quot;#27272a&quot; stroke=&quot;#7f1d1d&quot; stroke-width=&quot;1.5&quot;/&gt;       &lt;polygon points=&quot;52,86 44,48 58,34 72,48 66,86&quot; fill=&quot;url(#gAng)&quot; stroke=&quot;#ffffff&quot; stroke-width=&quot;1&quot;/&gt;       &lt;polygon points=&quot;82,88 76,42 92,28 106,42 98,88&quot; fill=&quot;url(#gAng)&quot; stroke=&quot;#ffffff&quot; stroke-width=&quot;1&quot;/&gt;       &lt;polygon points=&quot;108,89 106,60 118,50 128,60 122,89&quot; fill=&quot;url(#gAng)&quot; stroke=&quot;#e2e8f0&quot; stroke-width=&quot;0.8&quot;/&gt;       &lt;text x=&quot;82&quot; y=&quot;107&quot; text-anchor=&quot;middle&quot; fill=&quot;#cbd5e1&quot; font-size=&quot;8&quot; font-family=&quot;sans-serif&quot;&gt;Orthorhombic prism · Adamantine&lt;/text&gt;       &lt;rect x=&quot;162&quot; y=&quot;23&quot; width=&quot;186&quot; height=&quot;82&quot; rx=&quot;6&quot; fill=&quot;#1e293b&quot; stroke=&quot;#C0392B&quot; stroke-width=&quot;1&quot;/&gt;       &lt;text x=&quot;170&quot; y=&quot;38&quot; fill=&quot;#fca5a5&quot; font-size=&quot;8.8&quot; font-weight=&quot;bold&quot; font-family=&quot;sans-serif&quot;&gt;CRISM + HiRISE Fusion&lt;/text&gt;       &lt;text x=&quot;170&quot; y=&quot;52&quot; fill=&quot;#e2e8f0&quot; font-size=&quot;8.1&quot; font-family=&quot;sans-serif&quot;&gt;• SO₄²⁻ Bands: 1.94 &amp;amp; 2.40 µm&lt;/text&gt;       &lt;text x=&quot;170&quot; y=&quot;66&quot; fill=&quot;#e2e8f0&quot; font-size=&quot;8.1&quot; font-family=&quot;sans-serif&quot;&gt;• HiRISE: Light-toned fractured strata&lt;/text&gt;       &lt;text x=&quot;170&quot; y=&quot;80&quot; fill=&quot;#e2e8f0&quot; font-size=&quot;8.1&quot; font-family=&quot;sans-serif&quot;&gt;• Kuroko VMS / Evaporite paragenesis&lt;/text&gt;       &lt;text x=&quot;170&quot; y=&quot;94&quot; fill=&quot;#f87171&quot; font-size=&quot;8&quot; font-weight=&quot;bold&quot; font-family=&quot;sans-serif&quot;&gt;• World type locality: Parys Mtn&lt;/text&gt;     &lt;/svg&gt;                  &lt;div&gt;Orthorhombic &lt;b&gt;anglesite&lt;/b&gt; crystals formed via galena oxidation inside gossan vugs alongside primary VMS sulfides.&lt;/div&gt;             &lt;div style=&quot;margin-top:8px; background:#f1f5f9; border:1px solid #cbd5e1; border-radius:7px; padding:7px 9px; font-size:10.6px; color:#0f172a;&quot;&gt;                 &lt;div style=&quot;font-weight:800; color:#0369a1; margin-bottom:2px; text-transform:uppercase; font-size:9.3px;&quot;&gt;🛰️ Cross-Planetary Telemetry Fusion (MRO / THEMIS / MOLA ↔ Field)&lt;/div&gt;                 &lt;b&gt;Earth Field:&lt;/b&gt; Supergene sulfates in fractured volcanic host rock.&lt;br&gt;&lt;b&gt;Mars (CRISM + HiRISE):&lt;/b&gt; Light-toned fractured strata with SO₄²⁻ bands (1.94 &amp;amp; 2.40 µm) in the ExoMars sector.             &lt;/div&gt;             &lt;div style=&quot;margin-top:7px; padding-top:5px; border-top:1px dashed #cbd5e1; font-size:10px; color:#64748b; display:flex; justify-content:space-between; flex-wrap:wrap; gap:4px;&quot;&gt;                 &lt;span&gt;&lt;b&gt;Source:&lt;/b&gt; Parys Underground Group (Minerals)&lt;/span&gt;                 &lt;span style=&quot;color:#C0392B; font-weight:700;&quot;&gt;● Color-Synced&lt;/span&gt;             &lt;/div&gt;         &lt;/div&gt;     &lt;/div&gt;     &lt;/div&gt;`)[0];
+                popup_7e799be1a1d98ba498d82afe0ea3038e.setContent(html_80248ef246c9a84a99ec5ece439bf3f7);
+            
+        
+
+        circle_marker_aeabba4028f420e29ae7f97ac31ff617.bindPopup(popup_7e799be1a1d98ba498d82afe0ea3038e)
+        ;
+
+        
+    
+    
+            circle_marker_aeabba4028f420e29ae7f97ac31ff617.bindTooltip(
+                `&lt;div&gt;
+                     [Geology &amp; Mineralogy] Great Opencast – Anglesite (PbSO₄) &amp; Sulfides
+                 &lt;/div&gt;`,
+                {
+  &quot;sticky&quot;: true,
+}
+            );
+        
+    
+            var circle_marker_2519553d520196e1b8c3de33f735c3de = L.circleMarker(
+                [53.3873, -4.3486],
+                {&quot;bubblingMouseEvents&quot;: true, &quot;color&quot;: &quot;#ffffff&quot;, &quot;dashArray&quot;: null, &quot;dashOffset&quot;: null, &quot;fill&quot;: true, &quot;fillColor&quot;: &quot;#E67E22&quot;, &quot;fillOpacity&quot;: 0.95, &quot;fillRule&quot;: &quot;evenodd&quot;, &quot;lineCap&quot;: &quot;round&quot;, &quot;lineJoin&quot;: &quot;round&quot;, &quot;opacity&quot;: 1.0, &quot;radius&quot;: 11.5, &quot;stroke&quot;: true, &quot;weight&quot;: 2.6}
+            ).addTo(feature_group_93c8bbcfc5d547754a7885ef434b92b6);
+        
+    
+        var popup_72c9b67a9d48d1b6dc40508e807a844a = L.popup({
+  &quot;maxWidth&quot;: 400,
+});
+
+        
+            
+                var html_6ce0f1705f451cf7c84182c1b310db0e = $(`&lt;div id=&quot;html_6ce0f1705f451cf7c84182c1b310db0e&quot; style=&quot;width: 100.0%; height: 100.0%;&quot;&gt;     &lt;div class=&quot;popup-card-root&quot; style=&quot;font-family: &#x27;Segoe UI&#x27;, system-ui, -apple-system, sans-serif; width: 385px; max-width: 100%; font-size: 12.4px; line-height: 1.45; color: #1e293b; box-shadow: 0 12px 28px rgba(0,0,0,0.48); border-radius: 12px; overflow: hidden;&quot;&gt;         &lt;div style=&quot;background: linear-gradient(135deg, #E67E22, #0f172a); color: white; padding: 10px 13px;&quot;&gt;             &lt;div style=&quot;display:flex; justify-content:space-between; align-items:center; gap:6px; margin-bottom:4px; flex-wrap:wrap;&quot;&gt;                 &lt;span style=&quot;font-size:9.3px; text-transform:uppercase; letter-spacing:0.6px; background:rgba(255,255,255,0.2); padding:2px 8px; border-radius:10px; font-weight:700;&quot;&gt;                     Geology &amp; Mineralogy                 &lt;/span&gt;                 &lt;span style=&quot;font-size:9.8px; background:#090d16; color:#38bdf8; border:1px solid #38bdf8; padding:2px 8px; border-radius:10px; font-weight:700; white-space:nowrap;&quot;&gt;                     Match: Very High (94%)                 &lt;/span&gt;             &lt;/div&gt;             &lt;div style=&quot;font-weight: 800; font-size: 13.8px;&quot;&gt;White Rock – Quartz (SiO₂) &amp; Barite (BaSO₄)&lt;/div&gt;             &lt;div style=&quot;font-size: 10.8px; opacity: 0.92; margin-top:2px;&quot;&gt;Siliceous segregation via intense acid leaching&lt;/div&gt;         &lt;/div&gt;         &lt;div style=&quot;padding: 10px 13px; background: #ffffff; border: 1px solid #cbd5e1; border-top: none; border-radius: 0 0 12px 12px;&quot;&gt;                  &lt;svg viewBox=&quot;0 0 360 116&quot; width=&quot;100%&quot; style=&quot;background:#0f172a; border-radius:9px; margin-bottom:9px; border:1px solid #334155;&quot;&gt;       &lt;defs&gt;         &lt;linearGradient id=&quot;gQtz&quot; x1=&quot;0&quot; y1=&quot;0&quot; x2=&quot;1&quot; y2=&quot;0&quot;&gt;           &lt;stop offset=&quot;0%&quot; stop-color=&quot;#F8FAFC&quot;/&gt;&lt;stop offset=&quot;50%&quot; stop-color=&quot;#CBD5E1&quot;/&gt;&lt;stop offset=&quot;100%&quot; stop-color=&quot;#64748B&quot;/&gt;         &lt;/linearGradient&gt;       &lt;/defs&gt;       &lt;text x=&quot;12&quot; y=&quot;16&quot; fill=&quot;#FDBA74&quot; font-size=&quot;10&quot; font-weight=&quot;bold&quot; font-family=&quot;sans-serif&quot;&gt;QUARTZ (SiO₂) &amp;amp; HYDRATED SILICA (CRISM)&lt;/text&gt;       &lt;polygon points=&quot;36,90 36,46 48,30 60,46 60,90&quot; fill=&quot;url(#gQtz)&quot; stroke=&quot;#fff&quot; stroke-width=&quot;0.9&quot;/&gt;       &lt;polygon points=&quot;62,90 62,36 76,20 90,36 90,90&quot; fill=&quot;url(#gQtz)&quot; stroke=&quot;#fff&quot; stroke-width=&quot;1&quot;/&gt;       &lt;polygon points=&quot;92,90 92,52 103,38 114,52 114,90&quot; fill=&quot;url(#gQtz)&quot; stroke=&quot;#fff&quot; stroke-width=&quot;0.9&quot;/&gt;       &lt;text x=&quot;75&quot; y=&quot;107&quot; text-anchor=&quot;middle&quot; fill=&quot;#cbd5e1&quot; font-size=&quot;8&quot; font-family=&quot;sans-serif&quot;&gt;Quartz + Barite (White Rock)&lt;/text&gt;       &lt;rect x=&quot;134&quot; y=&quot;23&quot; width=&quot;214&quot; height=&quot;82&quot; rx=&quot;6&quot; fill=&quot;#1e293b&quot; stroke=&quot;#E67E22&quot; stroke-width=&quot;1&quot;/&gt;       &lt;text x=&quot;142&quot; y=&quot;38&quot; fill=&quot;#fdba74&quot; font-size=&quot;8.8&quot; font-weight=&quot;bold&quot; font-family=&quot;sans-serif&quot;&gt;CRISM Mapping (24.7° N, 339.5° E)&lt;/text&gt;       &lt;text x=&quot;142&quot; y=&quot;52&quot; fill=&quot;#e2e8f0&quot; font-size=&quot;8.1&quot; font-family=&quot;sans-serif&quot;&gt;• Mapped in Yellow/Green by CRISM&lt;/text&gt;       &lt;text x=&quot;142&quot; y=&quot;66&quot; fill=&quot;#e2e8f0&quot; font-size=&quot;8.1&quot; font-family=&quot;sans-serif&quot;&gt;• Diagnostic Si-OH doublet: 2.21 µm&lt;/text&gt;       &lt;text x=&quot;142&quot; y=&quot;80&quot; fill=&quot;#e2e8f0&quot; font-size=&quot;8.1&quot; font-family=&quot;sans-serif&quot;&gt;• Siliceous residue after acid leaching&lt;/text&gt;       &lt;text x=&quot;142&quot; y=&quot;94&quot; fill=&quot;#fb923c&quot; font-size=&quot;8&quot; font-weight=&quot;bold&quot; font-family=&quot;sans-serif&quot;&gt;• Exhumed by minor impact craters&lt;/text&gt;     &lt;/svg&gt;                  &lt;div&gt;Bright granular &lt;b&gt;quartz&lt;/b&gt; and barite outcrops on the western Opencast sector resulting from extreme acid-sulfate leaching.&lt;/div&gt;             &lt;div style=&quot;margin-top:8px; background:#f1f5f9; border:1px solid #cbd5e1; border-radius:7px; padding:7px 9px; font-size:10.6px; color:#0f172a;&quot;&gt;                 &lt;div style=&quot;font-weight:800; color:#0369a1; margin-bottom:2px; text-transform:uppercase; font-size:9.3px;&quot;&gt;🛰️ Cross-Planetary Telemetry Fusion (MRO / THEMIS / MOLA ↔ Field)&lt;/div&gt;                 &lt;b&gt;Earth Field:&lt;/b&gt; Residual silica-enriched horizon.&lt;br&gt;&lt;b&gt;Mars (MRO CRISM):&lt;/b&gt; Si-OH doublet at &lt;b&gt;2.21 µm&lt;/b&gt; mapped in yellow/green at the northern outlet (24.7° N, 339.5° E).             &lt;/div&gt;             &lt;div style=&quot;margin-top:7px; padding-top:5px; border-top:1px dashed #cbd5e1; font-size:10px; color:#64748b; display:flex; justify-content:space-between; flex-wrap:wrap; gap:4px;&quot;&gt;                 &lt;span&gt;&lt;b&gt;Source:&lt;/b&gt; Parys Underground Group (Geology)&lt;/span&gt;                 &lt;span style=&quot;color:#E67E22; font-weight:700;&quot;&gt;● Color-Synced&lt;/span&gt;             &lt;/div&gt;         &lt;/div&gt;     &lt;/div&gt;     &lt;/div&gt;`)[0];
+                popup_72c9b67a9d48d1b6dc40508e807a844a.setContent(html_6ce0f1705f451cf7c84182c1b310db0e);
+            
+        
+
+        circle_marker_2519553d520196e1b8c3de33f735c3de.bindPopup(popup_72c9b67a9d48d1b6dc40508e807a844a)
+        ;
+
+        
+    
+    
+            circle_marker_2519553d520196e1b8c3de33f735c3de.bindTooltip(
+                `&lt;div&gt;
+                     [Geology &amp; Mineralogy] White Rock – Quartz (SiO₂) &amp; Barite (BaSO₄)
+                 &lt;/div&gt;`,
+                {
+  &quot;sticky&quot;: true,
+}
+            );
+        
+    
+            feature_group_93c8bbcfc5d547754a7885ef434b92b6.addTo(map_56bd973a8a0a5ade6a1d8dc1841451bf);
+        
+    
+            var feature_group_6b15d14b0c630dcc5c2d5f45a945f34c = L.featureGroup(
+                {
+}
+            );
+        
+    
+            var circle_marker_c0b74da0dea7cb938150430499731636 = L.circleMarker(
+                [53.3845, -4.3392],
+                {&quot;bubblingMouseEvents&quot;: true, &quot;color&quot;: &quot;#ffffff&quot;, &quot;dashArray&quot;: null, &quot;dashOffset&quot;: null, &quot;fill&quot;: true, &quot;fillColor&quot;: &quot;#3498DB&quot;, &quot;fillOpacity&quot;: 0.95, &quot;fillRule&quot;: &quot;evenodd&quot;, &quot;lineCap&quot;: &quot;round&quot;, &quot;lineJoin&quot;: &quot;round&quot;, &quot;opacity&quot;: 1.0, &quot;radius&quot;: 11.5, &quot;stroke&quot;: true, &quot;weight&quot;: 2.6}
+            ).addTo(feature_group_6b15d14b0c630dcc5c2d5f45a945f34c);
+        
+    
+        var popup_6c5c9ec890d5984851f325deea25850c = L.popup({
+  &quot;maxWidth&quot;: 400,
+});
+
+        
+            
+                var html_129436d840e2c27108cc44a1ae0fa723 = $(`&lt;div id=&quot;html_129436d840e2c27108cc44a1ae0fa723&quot; style=&quot;width: 100.0%; height: 100.0%;&quot;&gt;     &lt;div class=&quot;popup-card-root&quot; style=&quot;font-family: &#x27;Segoe UI&#x27;, system-ui, -apple-system, sans-serif; width: 385px; max-width: 100%; font-size: 12.4px; line-height: 1.45; color: #1e293b; box-shadow: 0 12px 28px rgba(0,0,0,0.48); border-radius: 12px; overflow: hidden;&quot;&gt;         &lt;div style=&quot;background: linear-gradient(135deg, #3498DB, #0f172a); color: white; padding: 10px 13px;&quot;&gt;             &lt;div style=&quot;display:flex; justify-content:space-between; align-items:center; gap:6px; margin-bottom:4px; flex-wrap:wrap;&quot;&gt;                 &lt;span style=&quot;font-size:9.3px; text-transform:uppercase; letter-spacing:0.6px; background:rgba(255,255,255,0.2); padding:2px 8px; border-radius:10px; font-weight:700;&quot;&gt;                     Dust &amp; Weathering                 &lt;/span&gt;                 &lt;span style=&quot;font-size:9.8px; background:#090d16; color:#38bdf8; border:1px solid #38bdf8; padding:2px 8px; border-radius:10px; font-weight:700; white-space:nowrap;&quot;&gt;                     Match: Medium-High (82%)                 &lt;/span&gt;             &lt;/div&gt;             &lt;div style=&quot;font-weight: 800; font-size: 13.8px;&quot;&gt;Saline Efflorescence &amp; Clay Alteration Zoning&lt;/div&gt;             &lt;div style=&quot;font-size: 10.8px; opacity: 0.92; margin-top:2px;&quot;&gt;Melanterite, Pisanite, Chalcanthite, Basalumite&lt;/div&gt;         &lt;/div&gt;         &lt;div style=&quot;padding: 10px 13px; background: #ffffff; border: 1px solid #cbd5e1; border-top: none; border-radius: 0 0 12px 12px;&quot;&gt;                  &lt;svg viewBox=&quot;0 0 360 120&quot; width=&quot;100%&quot; style=&quot;background:#090d16; border-radius:9px; margin-bottom:9px; border:1px solid #38bdf8;&quot;&gt;       &lt;text x=&quot;12&quot; y=&quot;15&quot; fill=&quot;#38bdf8&quot; font-size=&quot;9.6&quot; font-weight=&quot;bold&quot; font-family=&quot;sans-serif&quot;&gt;3D CRISM + MOLA FUSION · MAWRTH VALLIS (10 KM)&lt;/text&gt;       &lt;polygon points=&quot;88,21 128,41 156,71 122,110 74,92 34,76 54,49&quot; fill=&quot;#1d4ed8&quot; opacity=&quot;0.74&quot; stroke=&quot;#60a5fa&quot; stroke-width=&quot;0.9&quot;/&gt;       &lt;polygon points=&quot;54,49 94,55 84,82 34,76&quot; fill=&quot;#dc2626&quot; opacity=&quot;0.78&quot; stroke=&quot;#f87171&quot; stroke-width=&quot;0.8&quot;/&gt;       &lt;polygon points=&quot;86,59 122,63 134,86 98,98&quot; fill=&quot;#84cc16&quot; opacity=&quot;0.88&quot; stroke=&quot;#fef08a&quot; stroke-width=&quot;0.9&quot;/&gt;       &lt;line x1=&quot;65&quot; y1=&quot;35&quot; x2=&quot;112&quot; y2=&quot;102&quot; stroke=&quot;#93c5fd&quot; stroke-width=&quot;0.5&quot; opacity=&quot;0.6&quot;/&gt;       &lt;line x1=&quot;88&quot; y1=&quot;21&quot; x2=&quot;122&quot; y2=&quot;110&quot; stroke=&quot;#93c5fd&quot; stroke-width=&quot;0.5&quot; opacity=&quot;0.6&quot;/&gt;       &lt;rect x=&quot;164&quot; y=&quot;21&quot; width=&quot;184&quot; height=&quot;88&quot; rx=&quot;6&quot; fill=&quot;#1e293b&quot; stroke=&quot;#334155&quot; stroke-width=&quot;1&quot;/&gt;       &lt;circle cx=&quot;176&quot; cy=&quot;35&quot; r=&quot;4.2&quot; fill=&quot;#ef4444&quot;/&gt;&lt;text x=&quot;186&quot; y=&quot;38&quot; fill=&quot;#f8fafc&quot; font-size=&quot;8.1&quot; font-family=&quot;sans-serif&quot;&gt;Red: Fe/Mg-Phyllosilicate (2.30 µm)&lt;/text&gt;       &lt;circle cx=&quot;176&quot; cy=&quot;51&quot; r=&quot;4.2&quot; fill=&quot;#3b82f6&quot;/&gt;&lt;text x=&quot;186&quot; y=&quot;54&quot; fill=&quot;#f8fafc&quot; font-size=&quot;8.1&quot; font-family=&quot;sans-serif&quot;&gt;Blue: Al-Phyllosilicate (2.20 µm)&lt;/text&gt;       &lt;circle cx=&quot;176&quot; cy=&quot;67&quot; r=&quot;4.2&quot; fill=&quot;#a3e635&quot;/&gt;&lt;text x=&quot;186&quot; y=&quot;70&quot; fill=&quot;#f8fafc&quot; font-size=&quot;8.1&quot; font-family=&quot;sans-serif&quot;&gt;Yellow/Green: Silica + Fe²⁺ Phase&lt;/text&gt;       &lt;text x=&quot;172&quot; y=&quot;86&quot; fill=&quot;#94a3b8&quot; font-size=&quot;7.8&quot; font-family=&quot;sans-serif&quot;&gt;MOLA DEM: 10x vertical exaggeration&lt;/text&gt;       &lt;text x=&quot;172&quot; y=&quot;100&quot; fill=&quot;#38bdf8&quot; font-size=&quot;7.9&quot; font-weight=&quot;bold&quot; font-family=&quot;sans-serif&quot;&gt;Efflorescence: Melanterite / Kieserite&lt;/text&gt;     &lt;/svg&gt;                  &lt;div&gt;Aqueous leaching of phyllosilicates and ephemeral precipitation of soluble sulfates during dehydration cycles.&lt;/div&gt;             &lt;div style=&quot;margin-top:8px; background:#f1f5f9; border:1px solid #cbd5e1; border-radius:7px; padding:7px 9px; font-size:10.6px; color:#0f172a;&quot;&gt;                 &lt;div style=&quot;font-weight:800; color:#0369a1; margin-bottom:2px; text-transform:uppercase; font-size:9.3px;&quot;&gt;🛰️ Cross-Planetary Telemetry Fusion (MRO / THEMIS / MOLA ↔ Field)&lt;/div&gt;                 &lt;b&gt;Earth Field:&lt;/b&gt; Seasonal dehydration of polyhydrated sulfates.&lt;br&gt;&lt;b&gt;Mars (CRISM + MOLA):&lt;/b&gt; Vertical sequence of Fe/Mg-clays (red) → Al-clays (blue) → hydrated silica (yellow/green).             &lt;/div&gt;             &lt;div style=&quot;margin-top:7px; padding-top:5px; border-top:1px dashed #cbd5e1; font-size:10px; color:#64748b; display:flex; justify-content:space-between; flex-wrap:wrap; gap:4px;&quot;&gt;                 &lt;span&gt;&lt;b&gt;Source:&lt;/b&gt; Parys Underground Group / MRO CRISM&lt;/span&gt;                 &lt;span style=&quot;color:#3498DB; font-weight:700;&quot;&gt;● Color-Synced&lt;/span&gt;             &lt;/div&gt;         &lt;/div&gt;     &lt;/div&gt;     &lt;/div&gt;`)[0];
+                popup_6c5c9ec890d5984851f325deea25850c.setContent(html_129436d840e2c27108cc44a1ae0fa723);
+            
+        
+
+        circle_marker_c0b74da0dea7cb938150430499731636.bindPopup(popup_6c5c9ec890d5984851f325deea25850c)
+        ;
+
+        
+    
+    
+            circle_marker_c0b74da0dea7cb938150430499731636.bindTooltip(
+                `&lt;div&gt;
+                     [Dust &amp; Weathering] Saline Efflorescence &amp; Clay Alteration Zoning
+                 &lt;/div&gt;`,
+                {
+  &quot;sticky&quot;: true,
+}
+            );
+        
+    
+            feature_group_6b15d14b0c630dcc5c2d5f45a945f34c.addTo(map_56bd973a8a0a5ade6a1d8dc1841451bf);
+        
+    
+            var feature_group_dca18feb8c5ba78aba063f1e69ee6096 = L.featureGroup(
+                {
+}
+            );
+        
+    
+            var circle_marker_3a75adfa8eadafc99cc1e84a54aaefdb = L.circleMarker(
+                [53.3817, -4.3463],
+                {&quot;bubblingMouseEvents&quot;: true, &quot;color&quot;: &quot;#ffffff&quot;, &quot;dashArray&quot;: null, &quot;dashOffset&quot;: null, &quot;fill&quot;: true, &quot;fillColor&quot;: &quot;#00B4D8&quot;, &quot;fillOpacity&quot;: 0.95, &quot;fillRule&quot;: &quot;evenodd&quot;, &quot;lineCap&quot;: &quot;round&quot;, &quot;lineJoin&quot;: &quot;round&quot;, &quot;opacity&quot;: 1.0, &quot;radius&quot;: 11.5, &quot;stroke&quot;: true, &quot;weight&quot;: 2.6}
+            ).addTo(feature_group_dca18feb8c5ba78aba063f1e69ee6096);
+        
+    
+        var popup_778ef99ad749a159acb17da58c7a8a79 = L.popup({
+  &quot;maxWidth&quot;: 400,
+});
+
+        
+            
+                var html_270ed6c9d7cccd02142335700ef7f852 = $(`&lt;div id=&quot;html_270ed6c9d7cccd02142335700ef7f852&quot; style=&quot;width: 100.0%; height: 100.0%;&quot;&gt;     &lt;div class=&quot;popup-card-root&quot; style=&quot;font-family: &#x27;Segoe UI&#x27;, system-ui, -apple-system, sans-serif; width: 385px; max-width: 100%; font-size: 12.4px; line-height: 1.45; color: #1e293b; box-shadow: 0 12px 28px rgba(0,0,0,0.48); border-radius: 12px; overflow: hidden;&quot;&gt;         &lt;div style=&quot;background: linear-gradient(135deg, #00B4D8, #0f172a); color: white; padding: 10px 13px;&quot;&gt;             &lt;div style=&quot;display:flex; justify-content:space-between; align-items:center; gap:6px; margin-bottom:4px; flex-wrap:wrap;&quot;&gt;                 &lt;span style=&quot;font-size:9.3px; text-transform:uppercase; letter-spacing:0.6px; background:rgba(255,255,255,0.2); padding:2px 8px; border-radius:10px; font-weight:700;&quot;&gt;                     Water Chemistry &amp; Climate                 &lt;/span&gt;                 &lt;span style=&quot;font-size:9.8px; background:#090d16; color:#38bdf8; border:1px solid #38bdf8; padding:2px 8px; border-radius:10px; font-weight:700; white-space:nowrap;&quot;&gt;                     Match: High Water (88%) / Poor Climate (24%)                 &lt;/span&gt;             &lt;/div&gt;             &lt;div style=&quot;font-weight: 800; font-size: 13.8px;&quot;&gt;Dyffryn Adda Stream – Acid Mine Drainage (AMD)&lt;/div&gt;             &lt;div style=&quot;font-size: 10.8px; opacity: 0.92; margin-top:2px;&quot;&gt;Hyperacid water (pH &lt; 2.5) vs. temperate oceanic climate&lt;/div&gt;         &lt;/div&gt;         &lt;div style=&quot;padding: 10px 13px; background: #ffffff; border: 1px solid #cbd5e1; border-top: none; border-radius: 0 0 12px 12px;&quot;&gt;                  &lt;svg viewBox=&quot;0 0 360 110&quot; width=&quot;100%&quot; style=&quot;background:#0f172a; border-radius:9px; margin-bottom:9px; border:1px solid #334155;&quot;&gt;       &lt;text x=&quot;12&quot; y=&quot;16&quot; fill=&quot;#38bdf8&quot; font-size=&quot;10&quot; font-weight=&quot;bold&quot; font-family=&quot;sans-serif&quot;&gt;HYDROGEOCHEMICAL &amp;amp; THERMAL CONTRAST (THEMIS/MOLA)&lt;/text&gt;       &lt;text x=&quot;14&quot; y=&quot;35&quot; fill=&quot;#cbd5e1&quot; font-size=&quot;8.6&quot; font-family=&quot;sans-serif&quot;&gt;AMD Acidity:&lt;/text&gt;       &lt;rect x=&quot;122&quot; y=&quot;25&quot; width=&quot;224&quot; height=&quot;13&quot; rx=&quot;4&quot; fill=&quot;#1e293b&quot;/&gt;       &lt;rect x=&quot;122&quot; y=&quot;25&quot; width=&quot;48&quot; height=&quot;13&quot; rx=&quot;4&quot; fill=&quot;#ef4444&quot;/&gt;       &lt;text x=&quot;176&quot; y=&quot;35&quot; fill=&quot;#fca5a5&quot; font-size=&quot;8.3&quot; font-weight=&quot;bold&quot; font-family=&quot;sans-serif&quot;&gt;pH &amp;lt; 2.5 (Fe, Cu, Zn, Al)&lt;/text&gt;       &lt;text x=&quot;14&quot; y=&quot;58&quot; fill=&quot;#cbd5e1&quot; font-size=&quot;8.6&quot; font-family=&quot;sans-serif&quot;&gt;Wales (Modern):&lt;/text&gt;       &lt;rect x=&quot;122&quot; y=&quot;48&quot; width=&quot;224&quot; height=&quot;13&quot; rx=&quot;4&quot; fill=&quot;#1e293b&quot;/&gt;       &lt;rect x=&quot;208&quot; y=&quot;48&quot; width=&quot;50&quot; height=&quot;13&quot; rx=&quot;4&quot; fill=&quot;#10b981&quot;/&gt;       &lt;text x=&quot;128&quot; y=&quot;58&quot; fill=&quot;#a7f3d0&quot; font-size=&quot;8&quot; font-family=&quot;sans-serif&quot;&gt;0 °C to +20 °C (Temperate oceanic)&lt;/text&gt;       &lt;text x=&quot;14&quot; y=&quot;81&quot; fill=&quot;#cbd5e1&quot; font-size=&quot;8.6&quot; font-family=&quot;sans-serif&quot;&gt;Mars THEMIS:&lt;/text&gt;       &lt;rect x=&quot;122&quot; y=&quot;71&quot; width=&quot;224&quot; height=&quot;13&quot; rx=&quot;4&quot; fill=&quot;#1e293b&quot;/&gt;       &lt;rect x=&quot;124&quot; y=&quot;71&quot; width=&quot;136&quot; height=&quot;13&quot; rx=&quot;4&quot; fill=&quot;#0284c7&quot;/&gt;       &lt;text x=&quot;129&quot; y=&quot;81&quot; fill=&quot;#fff&quot; font-size=&quot;8&quot; font-family=&quot;sans-serif&quot;&gt;-125 °C to +20 °C (TI: 220–440 tiu)&lt;/text&gt;       &lt;text x=&quot;14&quot; y=&quot;99&quot; fill=&quot;#7dd3fc&quot; font-size=&quot;8&quot; font-family=&quot;sans-serif&quot;&gt;MOLA Elevation: -3,200 m to -2,100 m (~1,100 m canyon incision)&lt;/text&gt;     &lt;/svg&gt;                  &lt;div&gt;Water at &lt;b&gt;pH &amp;lt; 2.5&lt;/b&gt; saturated with &lt;b&gt;Fe, Cu, Zn, Al&lt;/b&gt;. Temperate oceanic climate (0–20 °C) vs. hyperarid Mars (-125 to 20 °C, CO₂).&lt;/div&gt;             &lt;div style=&quot;margin-top:8px; background:#f1f5f9; border:1px solid #cbd5e1; border-radius:7px; padding:7px 9px; font-size:10.6px; color:#0f172a;&quot;&gt;                 &lt;div style=&quot;font-weight:800; color:#0369a1; margin-bottom:2px; text-transform:uppercase; font-size:9.3px;&quot;&gt;🛰️ Cross-Planetary Telemetry Fusion (MRO / THEMIS / MOLA ↔ Field)&lt;/div&gt;                 &lt;b&gt;Earth Field:&lt;/b&gt; Active acidic runoff across mineralized bedrock.&lt;br&gt;&lt;b&gt;Mars (THEMIS + MOLA):&lt;/b&gt; Noachian-Hesperian outflow channel (-3,200 m MOLA) under extreme modern diurnal swings (&amp;gt;100 K).             &lt;/div&gt;             &lt;div style=&quot;margin-top:7px; padding-top:5px; border-top:1px dashed #cbd5e1; font-size:10px; color:#64748b; display:flex; justify-content:space-between; flex-wrap:wrap; gap:4px;&quot;&gt;                 &lt;span&gt;&lt;b&gt;Source:&lt;/b&gt; PubMed (Acid Streams) &amp; PMC/Nature&lt;/span&gt;                 &lt;span style=&quot;color:#00B4D8; font-weight:700;&quot;&gt;● Color-Synced&lt;/span&gt;             &lt;/div&gt;         &lt;/div&gt;     &lt;/div&gt;     &lt;/div&gt;`)[0];
+                popup_778ef99ad749a159acb17da58c7a8a79.setContent(html_270ed6c9d7cccd02142335700ef7f852);
+            
+        
+
+        circle_marker_3a75adfa8eadafc99cc1e84a54aaefdb.bindPopup(popup_778ef99ad749a159acb17da58c7a8a79)
+        ;
+
+        
+    
+    
+            circle_marker_3a75adfa8eadafc99cc1e84a54aaefdb.bindTooltip(
+                `&lt;div&gt;
+                     [Water Chemistry &amp; Climate] Dyffryn Adda Stream – Acid Mine Drainage (AMD)
+                 &lt;/div&gt;`,
+                {
+  &quot;sticky&quot;: true,
+}
+            );
+        
+    
+            feature_group_dca18feb8c5ba78aba063f1e69ee6096.addTo(map_56bd973a8a0a5ade6a1d8dc1841451bf);
+        
+    
+            var feature_group_5f7a41a24c3d6deaee91708dd7c43b77 = L.featureGroup(
+                {
+}
+            );
+        
+    
+            var circle_marker_de3d6d1ba7882c7fbb6d627182a6cdf9 = L.circleMarker(
+                [53.3877, -4.3459],
+                {&quot;bubblingMouseEvents&quot;: true, &quot;color&quot;: &quot;#ffffff&quot;, &quot;dashArray&quot;: null, &quot;dashOffset&quot;: null, &quot;fill&quot;: true, &quot;fillColor&quot;: &quot;#16A085&quot;, &quot;fillOpacity&quot;: 0.95, &quot;fillRule&quot;: &quot;evenodd&quot;, &quot;lineCap&quot;: &quot;round&quot;, &quot;lineJoin&quot;: &quot;round&quot;, &quot;opacity&quot;: 1.0, &quot;radius&quot;: 11.5, &quot;stroke&quot;: true, &quot;weight&quot;: 2.6}
+            ).addTo(feature_group_5f7a41a24c3d6deaee91708dd7c43b77);
+        
+    
+        var popup_8a9f6830885f81f6d750b790a2cab163 = L.popup({
+  &quot;maxWidth&quot;: 400,
+});
+
+        
+            
+                var html_89aa94fa1a1427f7a1420bc14c1e990f = $(`&lt;div id=&quot;html_89aa94fa1a1427f7a1420bc14c1e990f&quot; style=&quot;width: 100.0%; height: 100.0%;&quot;&gt;     &lt;div class=&quot;popup-card-root&quot; style=&quot;font-family: &#x27;Segoe UI&#x27;, system-ui, -apple-system, sans-serif; width: 385px; max-width: 100%; font-size: 12.4px; line-height: 1.45; color: #1e293b; box-shadow: 0 12px 28px rgba(0,0,0,0.48); border-radius: 12px; overflow: hidden;&quot;&gt;         &lt;div style=&quot;background: linear-gradient(135deg, #16A085, #0f172a); color: white; padding: 10px 13px;&quot;&gt;             &lt;div style=&quot;display:flex; justify-content:space-between; align-items:center; gap:6px; margin-bottom:4px; flex-wrap:wrap;&quot;&gt;                 &lt;span style=&quot;font-size:9.3px; text-transform:uppercase; letter-spacing:0.6px; background:rgba(255,255,255,0.2); padding:2px 8px; border-radius:10px; font-weight:700;&quot;&gt;                     Topography &amp; Machinery                 &lt;/span&gt;                 &lt;span style=&quot;font-size:9.8px; background:#090d16; color:#38bdf8; border:1px solid #38bdf8; padding:2px 8px; border-radius:10px; font-weight:700; white-space:nowrap;&quot;&gt;                     Match: High (85%)                 &lt;/span&gt;             &lt;/div&gt;             &lt;div style=&quot;font-weight: 800; font-size: 13.8px;&quot;&gt;Great Opencast Benches &amp; Talus (~100 m)&lt;/div&gt;             &lt;div style=&quot;font-size: 10.8px; opacity: 0.92; margin-top:2px;&quot;&gt;Stepped benches (15–28 m wide) · Verified machinery clearance&lt;/div&gt;         &lt;/div&gt;         &lt;div style=&quot;padding: 10px 13px; background: #ffffff; border: 1px solid #cbd5e1; border-top: none; border-radius: 0 0 12px 12px;&quot;&gt;                  &lt;svg viewBox=&quot;0 0 360 110&quot; width=&quot;100%&quot; style=&quot;background:#0f172a; border-radius:9px; margin-bottom:9px; border:1px solid #334155;&quot;&gt;       &lt;text x=&quot;12&quot; y=&quot;16&quot; fill=&quot;#2dd4bf&quot; font-size=&quot;9.8&quot; font-weight=&quot;bold&quot; font-family=&quot;sans-serif&quot;&gt;TOPOGRAPHIC BENCH &amp;amp; MACHINERY CLEARANCE VERIFICATION&lt;/text&gt;       &lt;polygon points=&quot;16,92 16,32 58,32 76,54 114,54 140,86 220,86 268,40 344,40 344,92&quot; fill=&quot;#134e4a&quot; stroke=&quot;#14b8a6&quot; stroke-width=&quot;1.8&quot;/&gt;       &lt;line x1=&quot;76&quot; y1=&quot;50&quot; x2=&quot;114&quot; y2=&quot;50&quot; stroke=&quot;#38bdf8&quot; stroke-width=&quot;2&quot;/&gt;       &lt;text x=&quot;95&quot; y=&quot;45&quot; text-anchor=&quot;middle&quot; fill=&quot;#7dd3fc&quot; font-size=&quot;7.6&quot; font-weight=&quot;bold&quot; font-family=&quot;sans-serif&quot;&gt;Bench 15–28m&lt;/text&gt;       &lt;line x1=&quot;114&quot; y1=&quot;54&quot; x2=&quot;140&quot; y2=&quot;86&quot; stroke=&quot;#facc15&quot; stroke-width=&quot;1.8&quot; stroke-dasharray=&quot;3,2&quot;/&gt;       &lt;text x=&quot;156&quot; y=&quot;68&quot; fill=&quot;#fef08a&quot; font-size=&quot;8&quot; font-weight=&quot;bold&quot; font-family=&quot;sans-serif&quot;&gt;Talus 35°–65°&lt;/text&gt;       &lt;text x=&quot;180&quot; y=&quot;103&quot; text-anchor=&quot;middle&quot; fill=&quot;#99f6e4&quot; font-size=&quot;7.8&quot; font-family=&quot;sans-serif&quot;&gt;Verified Clearance for Rovers, Drilling Rigs &amp;amp; Muon Detectors&lt;/text&gt;     &lt;/svg&gt;                  &lt;div&gt;Subvertical 100 m pit walls and 35°–65° gravel talus. &lt;b&gt;Verified clearance:&lt;/b&gt; 15–28 m stepped haulage terraces safely accommodate rovers, drilling rigs, and LiDAR units.&lt;/div&gt;             &lt;div style=&quot;margin-top:8px; background:#f1f5f9; border:1px solid #cbd5e1; border-radius:7px; padding:7px 9px; font-size:10.6px; color:#0f172a;&quot;&gt;                 &lt;div style=&quot;font-weight:800; color:#0369a1; margin-bottom:2px; text-transform:uppercase; font-size:9.3px;&quot;&gt;🛰️ Cross-Planetary Telemetry Fusion (MRO / THEMIS / MOLA ↔ Field)&lt;/div&gt;                 &lt;b&gt;Earth Field:&lt;/b&gt; Open-pit benches rated for heavy field instrumentation.&lt;br&gt;&lt;b&gt;Mars (HiRISE 0.25 m/px + MOLA):&lt;/b&gt; Stratified canyon scarps and debris aprons along Mawrth Vallis.             &lt;/div&gt;             &lt;div style=&quot;margin-top:7px; padding-top:5px; border-top:1px dashed #cbd5e1; font-size:10px; color:#64748b; display:flex; justify-content:space-between; flex-wrap:wrap; gap:4px;&quot;&gt;                 &lt;span&gt;&lt;b&gt;Source:&lt;/b&gt; Anglesey Mining PLC (Geotechnical Survey)&lt;/span&gt;                 &lt;span style=&quot;color:#16A085; font-weight:700;&quot;&gt;● Color-Synced&lt;/span&gt;             &lt;/div&gt;         &lt;/div&gt;     &lt;/div&gt;     &lt;/div&gt;`)[0];
+                popup_8a9f6830885f81f6d750b790a2cab163.setContent(html_89aa94fa1a1427f7a1420bc14c1e990f);
+            
+        
+
+        circle_marker_de3d6d1ba7882c7fbb6d627182a6cdf9.bindPopup(popup_8a9f6830885f81f6d750b790a2cab163)
+        ;
+
+        
+    
+    
+            circle_marker_de3d6d1ba7882c7fbb6d627182a6cdf9.bindTooltip(
+                `&lt;div&gt;
+                     [Topography &amp; Machinery] Great Opencast Benches &amp; Talus (~100 m)
+                 &lt;/div&gt;`,
+                {
+  &quot;sticky&quot;: true,
+}
+            );
+        
+    
+            feature_group_5f7a41a24c3d6deaee91708dd7c43b77.addTo(map_56bd973a8a0a5ade6a1d8dc1841451bf);
+        
+    
+            var feature_group_81fc556b752b829fb9f7097b3ebdd064 = L.featureGroup(
+                {
+}
+            );
+        
+    
+            var circle_marker_4289bbe8e482fbcb07da28ff2a00b1a9 = L.circleMarker(
+                [53.3811, -4.3447],
+                {&quot;bubblingMouseEvents&quot;: true, &quot;color&quot;: &quot;#ffffff&quot;, &quot;dashArray&quot;: null, &quot;dashOffset&quot;: null, &quot;fill&quot;: true, &quot;fillColor&quot;: &quot;#27AE60&quot;, &quot;fillOpacity&quot;: 0.95, &quot;fillRule&quot;: &quot;evenodd&quot;, &quot;lineCap&quot;: &quot;round&quot;, &quot;lineJoin&quot;: &quot;round&quot;, &quot;opacity&quot;: 1.0, &quot;radius&quot;: 11.5, &quot;stroke&quot;: true, &quot;weight&quot;: 2.6}
+            ).addTo(feature_group_81fc556b752b829fb9f7097b3ebdd064);
+        
+    
+        var popup_47dcac8da28f7179e7b2ee499740a699 = L.popup({
+  &quot;maxWidth&quot;: 400,
+});
+
+        
+            
+                var html_8e34cb29323bd7f929f182dd45678da6 = $(`&lt;div id=&quot;html_8e34cb29323bd7f929f182dd45678da6&quot; style=&quot;width: 100.0%; height: 100.0%;&quot;&gt;     &lt;div class=&quot;popup-card-root&quot; style=&quot;font-family: &#x27;Segoe UI&#x27;, system-ui, -apple-system, sans-serif; width: 385px; max-width: 100%; font-size: 12.4px; line-height: 1.45; color: #1e293b; box-shadow: 0 12px 28px rgba(0,0,0,0.48); border-radius: 12px; overflow: hidden;&quot;&gt;         &lt;div style=&quot;background: linear-gradient(135deg, #27AE60, #0f172a); color: white; padding: 10px 13px;&quot;&gt;             &lt;div style=&quot;display:flex; justify-content:space-between; align-items:center; gap:6px; margin-bottom:4px; flex-wrap:wrap;&quot;&gt;                 &lt;span style=&quot;font-size:9.3px; text-transform:uppercase; letter-spacing:0.6px; background:rgba(255,255,255,0.2); padding:2px 8px; border-radius:10px; font-weight:700;&quot;&gt;                     Biology &amp; Biosignatures                 &lt;/span&gt;                 &lt;span style=&quot;font-size:9.8px; background:#090d16; color:#38bdf8; border:1px solid #38bdf8; padding:2px 8px; border-radius:10px; font-weight:700; white-space:nowrap;&quot;&gt;                     Match: Exceptional (98%)                 &lt;/span&gt;             &lt;/div&gt;             &lt;div style=&quot;font-weight: 800; font-size: 13.8px;&quot;&gt;Acidophilic Communities &amp; Fossilized Fe-Streamers&lt;/div&gt;             &lt;div style=&quot;font-size: 10.8px; opacity: 0.92; margin-top:2px;&quot;&gt;Acidithiobacillus ferrooxidans &amp; Leptospirillum&lt;/div&gt;         &lt;/div&gt;         &lt;div style=&quot;padding: 10px 13px; background: #ffffff; border: 1px solid #cbd5e1; border-top: none; border-radius: 0 0 12px 12px;&quot;&gt;                  &lt;svg viewBox=&quot;0 0 360 110&quot; width=&quot;100%&quot; style=&quot;background:#0f172a; border-radius:9px; margin-bottom:9px; border:1px solid #334155;&quot;&gt;       &lt;text x=&quot;12&quot; y=&quot;16&quot; fill=&quot;#4ade80&quot; font-size=&quot;10&quot; font-weight=&quot;bold&quot; font-family=&quot;sans-serif&quot;&gt;EXTREMOPHILE BIOSIGNATURES IN GOETHITE / JAROSITE&lt;/text&gt;       &lt;path d=&quot;M20,50 Q54,24 88,50 T156,50&quot; fill=&quot;none&quot; stroke=&quot;#22c55e&quot; stroke-width=&quot;5&quot; stroke-linecap=&quot;round&quot;/&gt;       &lt;path d=&quot;M20,69 Q54,43 88,69 T156,69&quot; fill=&quot;none&quot; stroke=&quot;#D35400&quot; stroke-width=&quot;6.5&quot; stroke-linecap=&quot;round&quot;/&gt;       &lt;path d=&quot;M20,69 Q54,43 88,69 T156,69&quot; fill=&quot;none&quot; stroke=&quot;#86efac&quot; stroke-width=&quot;1.8&quot; stroke-dasharray=&quot;3,3&quot;/&gt;       &lt;text x=&quot;18&quot; y=&quot;94&quot; fill=&quot;#bbf7d0&quot; font-size=&quot;8&quot; font-family=&quot;sans-serif&quot;&gt;Fe-Streamers → Structural fossilization&lt;/text&gt;       &lt;rect x=&quot;174&quot; y=&quot;23&quot; width=&quot;174&quot; height=&quot;76&quot; rx=&quot;6&quot; fill=&quot;#1e293b&quot; stroke=&quot;#27AE60&quot; stroke-width=&quot;1&quot;/&gt;       &lt;text x=&quot;182&quot; y=&quot;38&quot; fill=&quot;#4ade80&quot; font-size=&quot;8.8&quot; font-weight=&quot;bold&quot; font-family=&quot;sans-serif&quot;&gt;Similarity: Exceptional (98%)&lt;/text&gt;       &lt;text x=&quot;182&quot; y=&quot;52&quot; fill=&quot;#f1f5f9&quot; font-size=&quot;8.1&quot; font-family=&quot;sans-serif&quot;&gt;• Acidithiobacillus ferrooxidans&lt;/text&gt;       &lt;text x=&quot;182&quot; y=&quot;66&quot; fill=&quot;#f1f5f9&quot; font-size=&quot;8.1&quot; font-family=&quot;sans-serif&quot;&gt;• Leptospirillum ferrooxidans&lt;/text&gt;       &lt;text x=&quot;182&quot; y=&quot;80&quot; fill=&quot;#fde047&quot; font-size=&quot;8&quot; font-family=&quot;sans-serif&quot;&gt;• Target: Raman / SHERLOC / RLS&lt;/text&gt;     &lt;/svg&gt;                  &lt;div&gt;Mucilaginous microbial filaments (&lt;i&gt;streamers&lt;/i&gt;) of iron-oxidizing extremophiles encrusted and fossilized inside goethite and jarosite.&lt;/div&gt;             &lt;div style=&quot;margin-top:8px; background:#f1f5f9; border:1px solid #cbd5e1; border-radius:7px; padding:7px 9px; font-size:10.6px; color:#0f172a;&quot;&gt;                 &lt;div style=&quot;font-weight:800; color:#0369a1; margin-bottom:2px; text-transform:uppercase; font-size:9.3px;&quot;&gt;🛰️ Cross-Planetary Telemetry Fusion (MRO / THEMIS / MOLA ↔ Field)&lt;/div&gt;                 &lt;b&gt;Earth Field:&lt;/b&gt; Structural preservation of organic biosignatures in ferric matrices.&lt;br&gt;&lt;b&gt;Mars (Astrobiology Target):&lt;/b&gt; Primary reference for Raman/SHERLOC spectroscopy in Mawrth Vallis ferric oxides.             &lt;/div&gt;             &lt;div style=&quot;margin-top:7px; padding-top:5px; border-top:1px dashed #cbd5e1; font-size:10px; color:#64748b; display:flex; justify-content:space-between; flex-wrap:wrap; gap:4px;&quot;&gt;                 &lt;span&gt;&lt;b&gt;Source:&lt;/b&gt; PMC / Nature &amp; PubMed&lt;/span&gt;                 &lt;span style=&quot;color:#27AE60; font-weight:700;&quot;&gt;● Color-Synced&lt;/span&gt;             &lt;/div&gt;         &lt;/div&gt;     &lt;/div&gt;     &lt;/div&gt;`)[0];
+                popup_47dcac8da28f7179e7b2ee499740a699.setContent(html_8e34cb29323bd7f929f182dd45678da6);
+            
+        
+
+        circle_marker_4289bbe8e482fbcb07da28ff2a00b1a9.bindPopup(popup_47dcac8da28f7179e7b2ee499740a699)
+        ;
+
+        
+    
+    
+            circle_marker_4289bbe8e482fbcb07da28ff2a00b1a9.bindTooltip(
+                `&lt;div&gt;
+                     [Biology &amp; Biosignatures] Acidophilic Communities &amp; Fossilized Fe-Streamers
+                 &lt;/div&gt;`,
+                {
+  &quot;sticky&quot;: true,
+}
+            );
+        
+    
+            feature_group_81fc556b752b829fb9f7097b3ebdd064.addTo(map_56bd973a8a0a5ade6a1d8dc1841451bf);
+        
+    
+            var feature_group_35c7c9889204c381bc666e38b27f9e50 = L.featureGroup(
+                {
+}
+            );
+        
+    
+            var circle_marker_b9e0961b88bd65debe12804a056bbd2e = L.circleMarker(
+                [53.3849, -4.3493],
+                {&quot;bubblingMouseEvents&quot;: true, &quot;color&quot;: &quot;#ffffff&quot;, &quot;dashArray&quot;: null, &quot;dashOffset&quot;: null, &quot;fill&quot;: true, &quot;fillColor&quot;: &quot;#8E44AD&quot;, &quot;fillOpacity&quot;: 0.95, &quot;fillRule&quot;: &quot;evenodd&quot;, &quot;lineCap&quot;: &quot;round&quot;, &quot;lineJoin&quot;: &quot;round&quot;, &quot;opacity&quot;: 1.0, &quot;radius&quot;: 11.5, &quot;stroke&quot;: true, &quot;weight&quot;: 2.6}
+            ).addTo(feature_group_35c7c9889204c381bc666e38b27f9e50);
+        
+    
+        var popup_f0ddf4d30810d761aaaa46bf9f80abf5 = L.popup({
+  &quot;maxWidth&quot;: 400,
+});
+
+        
+            
+                var html_759998a7fac1f5a020c3feb6287cfa79 = $(`&lt;div id=&quot;html_759998a7fac1f5a020c3feb6287cfa79&quot; style=&quot;width: 100.0%; height: 100.0%;&quot;&gt;     &lt;div class=&quot;popup-card-root&quot; style=&quot;font-family: &#x27;Segoe UI&#x27;, system-ui, -apple-system, sans-serif; width: 385px; max-width: 100%; font-size: 12.4px; line-height: 1.45; color: #1e293b; box-shadow: 0 12px 28px rgba(0,0,0,0.48); border-radius: 12px; overflow: hidden;&quot;&gt;         &lt;div style=&quot;background: linear-gradient(135deg, #8E44AD, #0f172a); color: white; padding: 10px 13px;&quot;&gt;             &lt;div style=&quot;display:flex; justify-content:space-between; align-items:center; gap:6px; margin-bottom:4px; flex-wrap:wrap;&quot;&gt;                 &lt;span style=&quot;font-size:9.3px; text-transform:uppercase; letter-spacing:0.6px; background:rgba(255,255,255,0.2); padding:2px 8px; border-radius:10px; font-weight:700;&quot;&gt;                     Caves, Subsurface &amp; Robotics                 &lt;/span&gt;                 &lt;span style=&quot;font-size:9.8px; background:#090d16; color:#38bdf8; border:1px solid #38bdf8; padding:2px 8px; border-radius:10px; font-weight:700; white-space:nowrap;&quot;&gt;                     Match: Excellent (94%)                 &lt;/span&gt;             &lt;/div&gt;             &lt;div style=&quot;font-weight: 800; font-size: 13.8px;&quot;&gt;Mountain Shaft (&gt;300 m) &amp; Underground Galleries&lt;/div&gt;             &lt;div style=&quot;font-size: 10.8px; opacity: 0.92; margin-top:2px;&quot;&gt;Deep vertical shafts &amp; 4.0 m GPS-denied access portals&lt;/div&gt;         &lt;/div&gt;         &lt;div style=&quot;padding: 10px 13px; background: #ffffff; border: 1px solid #cbd5e1; border-top: none; border-radius: 0 0 12px 12px;&quot;&gt;                  &lt;svg viewBox=&quot;0 0 360 110&quot; width=&quot;100%&quot; style=&quot;background:#0f172a; border-radius:9px; margin-bottom:9px; border:1px solid #334155;&quot;&gt;       &lt;text x=&quot;12&quot; y=&quot;16&quot; fill=&quot;#c084fc&quot; font-size=&quot;10&quot; font-weight=&quot;bold&quot; font-family=&quot;sans-serif&quot;&gt;SUBSURFACE ROBOTICS &amp;amp; MACHINERY CLEARANCE&lt;/text&gt;       &lt;rect x=&quot;18&quot; y=&quot;24&quot; width=&quot;122&quot; height=&quot;75&quot; rx=&quot;5&quot; fill=&quot;#1e1b2e&quot; stroke=&quot;#8E44AD&quot; stroke-width=&quot;1.2&quot;/&gt;       &lt;rect x=&quot;52&quot; y=&quot;24&quot; width=&quot;22&quot; height=&quot;55&quot; fill=&quot;#090d16&quot;/&gt;       &lt;rect x=&quot;34&quot; y=&quot;65&quot; width=&quot;88&quot; height=&quot;15&quot; fill=&quot;#090d16&quot;/&gt;       &lt;circle cx=&quot;63&quot; cy=&quot;45&quot; r=&quot;4&quot; fill=&quot;#38bdf8&quot;/&gt;       &lt;line x1=&quot;52&quot; y1=&quot;45&quot; x2=&quot;74&quot; y2=&quot;45&quot; stroke=&quot;#38bdf8&quot; stroke-width=&quot;1.5&quot;/&gt;       &lt;line x1=&quot;63&quot; y1=&quot;45&quot; x2=&quot;51&quot; y2=&quot;60&quot; stroke=&quot;#38bdf8&quot; stroke-width=&quot;0.8&quot; stroke-dasharray=&quot;2,2&quot;/&gt;       &lt;line x1=&quot;63&quot; y1=&quot;45&quot; x2=&quot;75&quot; y2=&quot;60&quot; stroke=&quot;#38bdf8&quot; stroke-width=&quot;0.8&quot; stroke-dasharray=&quot;2,2&quot;/&gt;       &lt;text x=&quot;79&quot; y=&quot;93&quot; text-anchor=&quot;middle&quot; fill=&quot;#e9d5ff&quot; font-size=&quot;7.8&quot; font-family=&quot;sans-serif&quot;&gt;Shaft &amp;gt;300m · 4.0m Portal&lt;/text&gt;       &lt;rect x=&quot;150&quot; y=&quot;24&quot; width=&quot;198&quot; height=&quot;75&quot; rx=&quot;6&quot; fill=&quot;#1e293b&quot; stroke=&quot;#8E44AD&quot; stroke-width=&quot;1&quot;/&gt;       &lt;text x=&quot;158&quot; y=&quot;38&quot; fill=&quot;#d8b4fe&quot; font-size=&quot;8.8&quot; font-weight=&quot;bold&quot; font-family=&quot;sans-serif&quot;&gt;Field Readiness: Excellent (94%)&lt;/text&gt;       &lt;text x=&quot;158&quot; y=&quot;52&quot; fill=&quot;#f1f5f9&quot; font-size=&quot;8.1&quot; font-family=&quot;sans-serif&quot;&gt;• Heavy rovers (3.0m footprint clearance)&lt;/text&gt;       &lt;text x=&quot;158&quot; y=&quot;66&quot; fill=&quot;#f1f5f9&quot; font-size=&quot;8.1&quot; font-family=&quot;sans-serif&quot;&gt;• GPS-denied LiDAR SLAM cave drones&lt;/text&gt;       &lt;text x=&quot;158&quot; y=&quot;80&quot; fill=&quot;#f1f5f9&quot; font-size=&quot;8.1&quot; font-family=&quot;sans-serif&quot;&gt;• Spectrometers &amp;amp; muon tomography&lt;/text&gt;     &lt;/svg&gt;                  &lt;div&gt;Vertical shafts (&amp;gt;300 m), high metallic density, and GPS-denied galleries with 3.5×4.0 m clearance for autonomous drones and muon tomography rigs.&lt;/div&gt;             &lt;div style=&quot;margin-top:8px; background:#f1f5f9; border:1px solid #cbd5e1; border-radius:7px; padding:7px 9px; font-size:10.6px; color:#0f172a;&quot;&gt;                 &lt;div style=&quot;font-weight:800; color:#0369a1; margin-bottom:2px; text-transform:uppercase; font-size:9.3px;&quot;&gt;🛰️ Cross-Planetary Telemetry Fusion (MRO / THEMIS / MOLA ↔ Field)&lt;/div&gt;                 &lt;b&gt;Earth Field:&lt;/b&gt; Validated testbed for SLAM drones, rovers, and cosmic-ray muon detectors.&lt;br&gt;&lt;b&gt;Mars (HiRISE):&lt;/b&gt; Subsurface cavities and cliff overhangs shielded from solar UV and galactic cosmic rays.             &lt;/div&gt;             &lt;div style=&quot;margin-top:7px; padding-top:5px; border-top:1px dashed #cbd5e1; font-size:10px; color:#64748b; display:flex; justify-content:space-between; flex-wrap:wrap; gap:4px;&quot;&gt;                 &lt;span&gt;&lt;b&gt;Source:&lt;/b&gt; Anglesey Mining PLC (Underground Structure)&lt;/span&gt;                 &lt;span style=&quot;color:#8E44AD; font-weight:700;&quot;&gt;● Color-Synced&lt;/span&gt;             &lt;/div&gt;         &lt;/div&gt;     &lt;/div&gt;     &lt;/div&gt;`)[0];
+                popup_f0ddf4d30810d761aaaa46bf9f80abf5.setContent(html_759998a7fac1f5a020c3feb6287cfa79);
+            
+        
+
+        circle_marker_b9e0961b88bd65debe12804a056bbd2e.bindPopup(popup_f0ddf4d30810d761aaaa46bf9f80abf5)
+        ;
+
+        
+    
+    
+            circle_marker_b9e0961b88bd65debe12804a056bbd2e.bindTooltip(
+                `&lt;div&gt;
+                     [Caves, Subsurface &amp; Robotics] Mountain Shaft (&gt;300 m) &amp; Underground Galleries
+                 &lt;/div&gt;`,
+                {
+  &quot;sticky&quot;: true,
+}
+            );
+        
+    
+            feature_group_35c7c9889204c381bc666e38b27f9e50.addTo(map_56bd973a8a0a5ade6a1d8dc1841451bf);
+        
+    
+            var layer_control_8348e6c76cd1a09f0a4155a8ffb1156e_layers = {
+                base_layers : {
+                    &quot;1. High-Res Satellite (Esri)&quot; : tile_layer_f66966193de4da81d669ca96de208a60,
+                    &quot;2. B\u0026W Topographic Base&quot; : tile_layer_7671321a1472fd264844514c0ccce791,
+                    &quot;3. Street \u0026 Trail Map (Esri)&quot; : tile_layer_5a97bf657fbd5b6cc38dc26c3355d775,
+                },
+                overlays :  {
+                    &quot;0. Geological \u0026 Machinery Perimeters&quot; : feature_group_bb1ca4d83d7b5bf6501ce4919c91ac62,
+                    &quot;1. Mineralogy (Jarosite, Oxides, Anglesite, Quartz)&quot; : feature_group_93c8bbcfc5d547754a7885ef434b92b6,
+                    &quot;2. Dust, Weathering \u0026 Leaching&quot; : feature_group_6b15d14b0c630dcc5c2d5f45a945f34c,
+                    &quot;3. Water Chemistry \u0026 Climate&quot; : feature_group_dca18feb8c5ba78aba063f1e69ee6096,
+                    &quot;4. Topography \u0026 Machinery Clearance&quot; : feature_group_5f7a41a24c3d6deaee91708dd7c43b77,
+                    &quot;5. Biology \u0026 Biosignatures&quot; : feature_group_81fc556b752b829fb9f7097b3ebdd064,
+                    &quot;6. Caves, Subsurface \u0026 Robotics&quot; : feature_group_35c7c9889204c381bc666e38b27f9e50,
+                },
+            };
+            let layer_control_8348e6c76cd1a09f0a4155a8ffb1156e = L.control.layers(
+                layer_control_8348e6c76cd1a09f0a4155a8ffb1156e_layers.base_layers,
+                layer_control_8348e6c76cd1a09f0a4155a8ffb1156e_layers.overlays,
+                {
+  &quot;position&quot;: &quot;topright&quot;,
+  &quot;collapsed&quot;: true,
+  &quot;autoZIndex&quot;: true,
+}
+            ).addTo(map_56bd973a8a0a5ade6a1d8dc1841451bf);
+
+        
+&lt;/script&gt;
+&lt;/html&gt;"></iframe>
+    </div>
+
+    <div class="map-card mars">
+      <div class="map-header mars">
+        <span>🔴 MARS · Mawrth Vallis &amp; Oyama</span>
+        <span style="font-size:10.8px; opacity:0.92;">NASA Viking / MOLA / CRISM</span>
+      </div>
+      <iframe id="frame-marte" class="map-frame" srcdoc="&lt;!DOCTYPE html&gt;
+&lt;html&gt;
+&lt;head&gt;
+    
+    &lt;meta http-equiv=&quot;content-type&quot; content=&quot;text/html; charset=UTF-8&quot; /&gt;
+    &lt;script src=&quot;https://cdn.jsdelivr.net/npm/leaflet@1.9.3/dist/leaflet.js&quot;&gt;&lt;/script&gt;
+    &lt;script src=&quot;https://code.jquery.com/jquery-3.7.1.min.js&quot;&gt;&lt;/script&gt;
+    &lt;script src=&quot;https://cdn.jsdelivr.net/npm/bootstrap@5.2.2/dist/js/bootstrap.bundle.min.js&quot;&gt;&lt;/script&gt;
+    &lt;script src=&quot;https://cdnjs.cloudflare.com/ajax/libs/Leaflet.awesome-markers/2.0.2/leaflet.awesome-markers.js&quot;&gt;&lt;/script&gt;
+    &lt;link rel=&quot;stylesheet&quot; href=&quot;https://cdn.jsdelivr.net/npm/leaflet@1.9.3/dist/leaflet.css&quot;/&gt;
+    &lt;link rel=&quot;stylesheet&quot; href=&quot;https://cdn.jsdelivr.net/npm/bootstrap@5.2.2/dist/css/bootstrap.min.css&quot;/&gt;
+    &lt;link rel=&quot;stylesheet&quot; href=&quot;https://netdna.bootstrapcdn.com/bootstrap/3.0.0/css/bootstrap-glyphicons.css&quot;/&gt;
+    &lt;link rel=&quot;stylesheet&quot; href=&quot;https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.2.0/css/all.min.css&quot;/&gt;
+    &lt;link rel=&quot;stylesheet&quot; href=&quot;https://cdnjs.cloudflare.com/ajax/libs/Leaflet.awesome-markers/2.0.2/leaflet.awesome-markers.css&quot;/&gt;
+    &lt;link rel=&quot;stylesheet&quot; href=&quot;https://cdn.jsdelivr.net/gh/python-visualization/folium/folium/templates/leaflet.awesome.rotate.min.css&quot;/&gt;
+    
+            &lt;meta name=&quot;viewport&quot; content=&quot;width=device-width,
+                initial-scale=1.0, maximum-scale=1.0, user-scalable=no&quot; /&gt;
+            &lt;style&gt;
+                #map_22bfc861fa1f887a6c5ef1c25a6ccc59 {
+                    position: relative;
+                    width: 100.0%;
+                    height: 100.0%;
+                    left: 0.0%;
+                    top: 0.0%;
+                }
+                .leaflet-container { font-size: 1rem; }
+            &lt;/style&gt;
+
+            &lt;style&gt;html, body {
+                width: 100%;
+                height: 100%;
+                margin: 0;
+                padding: 0;
+            }
+            &lt;/style&gt;
+
+            &lt;style&gt;#map {
+                position:absolute;
+                top:0;
+                bottom:0;
+                right:0;
+                left:0;
+                }
+            &lt;/style&gt;
+
+            &lt;script&gt;
+                L_NO_TOUCH = false;
+                L_DISABLE_3D = false;
+            &lt;/script&gt;
+
+        
+    &lt;script src=&quot;https://cdn.jsdelivr.net/npm/leaflet.fullscreen@3.0.0/Control.FullScreen.min.js&quot;&gt;&lt;/script&gt;
+    &lt;link rel=&quot;stylesheet&quot; href=&quot;https://cdn.jsdelivr.net/npm/leaflet.fullscreen@3.0.0/Control.FullScreen.css&quot;/&gt;
+&lt;/head&gt;
+&lt;body&gt;
+    
+    
+&lt;style&gt;
+  html, body, .folium-map, .leaflet-container {
+      height: 100% !important;
+      width: 100% !important;
+      margin: 0 !important;
+      padding: 0 !important;
+      background-color: #141824 !important;
+      background-image:
+          linear-gradient(rgba(56, 189, 248, 0.08) 1px, transparent 1px),
+          linear-gradient(90deg, rgba(56, 189, 248, 0.08) 1px, transparent 1px) !important;
+      background-size: 40px 40px !important;
+  }
+  .earth-bw-topo {
+      filter: grayscale(100%) contrast(1.22) brightness(1.03);
+  }
+  .mars-crism-boost {
+      filter: contrast(1.36) saturate(1.65) hue-rotate(-8deg);
+  }
+  .mars-bw-topo {
+      filter: grayscale(100%) contrast(1.28) brightness(1.04);
+  }
+  body.crism-active .leaflet-tile-pane {
+      filter: contrast(1.38) saturate(1.70) brightness(0.95);
+      transition: filter 0.35s ease;
+  }
+  body.bw-active .leaflet-tile-pane {
+      filter: grayscale(100%) contrast(1.25);
+      transition: filter 0.35s ease;
+  }
+  .leaflet-popup-content-wrapper {
+      padding: 0 !important;
+      border-radius: 12px !important;
+      background: transparent !important;
+      box-shadow: none !important;
+  }
+  .leaflet-popup-content {
+      margin: 0 !important;
+      width: auto !important;
+  }
+  .leaflet-popup-tip {
+      background: #ffffff !important;
+  }
+  @media (max-width: 540px) {
+      .leaflet-popup-content-wrapper,
+      .leaflet-popup-content {
+          max-width: 84vw !important;
+      }
+      .popup-card-root {
+          width: 84vw !important;
+          font-size: 11.5px !important;
+      }
+  }
+&lt;/style&gt;
+&lt;script&gt;
+window.addEventListener(&quot;message&quot;, function(event) {
+    if (!event.data) return;
+    if (event.data.type === &quot;INVALIDATE_SIZE&quot;) {
+        for (var k in window) {
+            if (window[k] instanceof L.Map) { window[k].invalidateSize(); break; }
+        }
+        return;
+    }
+    if (event.data.type === &quot;TOGGLE_CRISM&quot;) {
+        document.body.classList.toggle(&quot;crism-active&quot;, event.data.enabled);
+        return;
+    }
+    if (event.data.type === &quot;TOGGLE_BW&quot;) {
+        document.body.classList.toggle(&quot;bw-active&quot;, event.data.enabled);
+        return;
+    }
+    if (event.data.type !== &quot;FLY_TO_ANALOG&quot;) return;
+    var mapObj = null;
+    for (var key in window) {
+        if (window[key] instanceof L.Map) {
+            mapObj = window[key];
+            break;
+        }
+    }
+    if (!mapObj) return;
+    mapObj.flyTo([event.data.lat, event.data.lon], event.data.zoom, {
+        animate: true,
+        duration: 1.2
+    });
+    setTimeout(function() {
+        var targetLatLng = L.latLng(event.data.lat, event.data.lon);
+        var bestLayer = null;
+        var minDist = Infinity;
+        mapObj.eachLayer(function(layer) {
+            if (layer instanceof L.CircleMarker &amp;&amp; layer.getLatLng &amp;&amp; layer.getRadius() &gt;= 10) {
+                var d = targetLatLng.distanceTo(layer.getLatLng());
+                if (d &lt; minDist) {
+                    minDist = d;
+                    bestLayer = layer;
+                }
+            }
+        });
+        if (bestLayer &amp;&amp; bestLayer.openPopup) {
+            bestLayer.openPopup();
+        }
+    }, 1250);
+});
+&lt;/script&gt;
+    
+            &lt;div class=&quot;folium-map&quot; id=&quot;map_22bfc861fa1f887a6c5ef1c25a6ccc59&quot; &gt;&lt;/div&gt;
+        
+&lt;/body&gt;
+&lt;script&gt;
+    
+    
+            var map_22bfc861fa1f887a6c5ef1c25a6ccc59 = L.map(
+                &quot;map_22bfc861fa1f887a6c5ef1c25a6ccc59&quot;,
+                {
+                    center: [23.65, -19.15],
+                    crs: L.CRS.EPSG4326,
+                    ...{
+  &quot;zoom&quot;: 6,
+  &quot;zoomControl&quot;: true,
+  &quot;preferCanvas&quot;: false,
+}
+
+                }
+            );
+            L.control.scale().addTo(map_22bfc861fa1f887a6c5ef1c25a6ccc59);
+
+            
+
+        
+    
+            var tile_layer_740e37e8a27473680cd4016dc3108681 = L.tileLayer(
+                &quot;https://trek.nasa.gov/tiles/Mars/EQ/Mars_Viking_MDIM21_ClrMosaic_global_232m/1.0.0//default/default028mm/{z}/{y}/{x}.jpg&quot;,
+                {
+  &quot;minZoom&quot;: 0,
+  &quot;maxZoom&quot;: 10,
+  &quot;maxNativeZoom&quot;: 7,
+  &quot;noWrap&quot;: false,
+  &quot;attribution&quot;: &quot;NASA / JPL / USGS Viking MDIM 2.1 Color&quot;,
+  &quot;subdomains&quot;: &quot;abc&quot;,
+  &quot;detectRetina&quot;: false,
+  &quot;tms&quot;: false,
+  &quot;opacity&quot;: 1,
+}
+
+            );
+        
+    
+            tile_layer_740e37e8a27473680cd4016dc3108681.addTo(map_22bfc861fa1f887a6c5ef1c25a6ccc59);
+        
+    
+            var tile_layer_550fb59761f1964ee6da9e3e33aaf386 = L.tileLayer(
+                &quot;https://trek.nasa.gov/tiles/Mars/EQ/Mars_MGS_MOLA_ClrShade_merge_global_463m/1.0.0//default/default028mm/{z}/{y}/{x}.jpg&quot;,
+                {
+  &quot;minZoom&quot;: 0,
+  &quot;maxZoom&quot;: 10,
+  &quot;maxNativeZoom&quot;: 6,
+  &quot;noWrap&quot;: false,
+  &quot;attribution&quot;: &quot;NASA / GSFC MOLA Laser Altimeter&quot;,
+  &quot;subdomains&quot;: &quot;abc&quot;,
+  &quot;detectRetina&quot;: false,
+  &quot;tms&quot;: false,
+  &quot;opacity&quot;: 1,
+}
+
+            );
+        
+    
+            tile_layer_550fb59761f1964ee6da9e3e33aaf386.addTo(map_22bfc861fa1f887a6c5ef1c25a6ccc59);
+        
+    
+            var tile_layer_65333f2336e5b0053500c2a311a4110c = L.tileLayer(
+                &quot;https://trek.nasa.gov/tiles/Mars/EQ/Mars_MGS_MOLA_ClrShade_merge_global_463m/1.0.0//default/default028mm/{z}/{y}/{x}.jpg&quot;,
+                {
+  &quot;minZoom&quot;: 0,
+  &quot;maxZoom&quot;: 10,
+  &quot;maxNativeZoom&quot;: 6,
+  &quot;noWrap&quot;: false,
+  &quot;attribution&quot;: &quot;NASA MOLA Grayscale Geomorphology&quot;,
+  &quot;subdomains&quot;: &quot;abc&quot;,
+  &quot;detectRetina&quot;: false,
+  &quot;tms&quot;: false,
+  &quot;opacity&quot;: 1,
+  &quot;className&quot;: &quot;mars-bw-topo&quot;,
+}
+
+            );
+        
+    
+            tile_layer_65333f2336e5b0053500c2a311a4110c.addTo(map_22bfc861fa1f887a6c5ef1c25a6ccc59);
+        
+    
+            var tile_layer_b3cc27f3c0227fc06c91966b97287f32 = L.tileLayer(
+                &quot;https://trek.nasa.gov/tiles/Mars/EQ/Mars_Viking_MDIM21_ClrMosaic_global_232m/1.0.0//default/default028mm/{z}/{y}/{x}.jpg&quot;,
+                {
+  &quot;minZoom&quot;: 0,
+  &quot;maxZoom&quot;: 10,
+  &quot;maxNativeZoom&quot;: 7,
+  &quot;noWrap&quot;: false,
+  &quot;attribution&quot;: &quot;NASA MRO CRISM Spectral Enhancement&quot;,
+  &quot;subdomains&quot;: &quot;abc&quot;,
+  &quot;detectRetina&quot;: false,
+  &quot;tms&quot;: false,
+  &quot;opacity&quot;: 1,
+  &quot;className&quot;: &quot;mars-crism-boost&quot;,
+}
+
+            );
+        
+    
+            tile_layer_b3cc27f3c0227fc06c91966b97287f32.addTo(map_22bfc861fa1f887a6c5ef1c25a6ccc59);
+        
+    
+            L.control.fullscreen(
+                {
+  &quot;position&quot;: &quot;topleft&quot;,
+  &quot;title&quot;: &quot;Full Screen&quot;,
+  &quot;titleCancel&quot;: &quot;Exit Full Screen&quot;,
+  &quot;forceSeparateButton&quot;: false,
+}
+            ).addTo(map_22bfc861fa1f887a6c5ef1c25a6ccc59);
+        
+    
+            var feature_group_97607cb65bb0fa64b657ac4355797785 = L.featureGroup(
+                {
+}
+            );
+        
+    
+            var circle_375c91b20a16929fd01d8b9b8928ee93 = L.circle(
+                [23.66, -20.0],
+                {&quot;bubblingMouseEvents&quot;: true, &quot;color&quot;: &quot;#94a3b8&quot;, &quot;dashArray&quot;: &quot;5, 5&quot;, &quot;dashOffset&quot;: null, &quot;fill&quot;: true, &quot;fillColor&quot;: &quot;#475569&quot;, &quot;fillOpacity&quot;: 0.1, &quot;fillRule&quot;: &quot;evenodd&quot;, &quot;lineCap&quot;: &quot;round&quot;, &quot;lineJoin&quot;: &quot;round&quot;, &quot;opacity&quot;: 1.0, &quot;radius&quot;: 50500, &quot;stroke&quot;: true, &quot;weight&quot;: 1.6}
+            ).addTo(feature_group_97607cb65bb0fa64b657ac4355797785);
+        
+    
+            circle_375c91b20a16929fd01d8b9b8928ee93.bindTooltip(
+                `&lt;div&gt;
+                     Oyama Crater (Ø 101 km · 23.66° N, 340.0° E): Bounded on the east and north by Mawrth Vallis
+                 &lt;/div&gt;`,
+                {
+  &quot;sticky&quot;: true,
+}
+            );
+        
+    
+            var marker_8b76e742ceb3a12b3fb1f3c9a8909304 = L.marker(
+                [23.66, -20.0],
+                {
+}
+            ).addTo(feature_group_97607cb65bb0fa64b657ac4355797785);
+        
+    
+            var div_icon_b994100f49c8dbc874d7e829abdebb45 = L.divIcon({
+  &quot;html&quot;: &quot;\n        \u003cdiv style=\&quot;font-size:10px; font-weight:800; color:#f8fafc; background:rgba(15,23,42,0.80);\n                    border:1px solid #94a3b8; border-radius:6px; padding:2px 6px; white-space:nowrap;\n                    transform:translate(-50%, -50%); pointer-events:none;\&quot;\u003e\n            Oyama Crater (\u00d8 101 km)\n        \u003c/div\u003e\n    &quot;,
+  &quot;className&quot;: &quot;empty&quot;,
+});
+        
+    
+                marker_8b76e742ceb3a12b3fb1f3c9a8909304.setIcon(div_icon_b994100f49c8dbc874d7e829abdebb45);
+            
+    
+            var circle_d09a39cfb4d446c7fed3704f18680153 = L.circle(
+                [21.9, -22.4],
+                {&quot;bubblingMouseEvents&quot;: true, &quot;color&quot;: &quot;#64748b&quot;, &quot;dashArray&quot;: &quot;4, 5&quot;, &quot;dashOffset&quot;: null, &quot;fill&quot;: true, &quot;fillColor&quot;: &quot;#334155&quot;, &quot;fillOpacity&quot;: 0.08, &quot;fillRule&quot;: &quot;evenodd&quot;, &quot;lineCap&quot;: &quot;round&quot;, &quot;lineJoin&quot;: &quot;round&quot;, &quot;opacity&quot;: 1.0, &quot;radius&quot;: 46000, &quot;stroke&quot;: true, &quot;weight&quot;: 1.3}
+            ).addTo(feature_group_97607cb65bb0fa64b657ac4355797785);
+        
+    
+            circle_d09a39cfb4d446c7fed3704f18680153.bindTooltip(
+                `&lt;div&gt;
+                     McLaughlin Crater (Ø 92 km · 21.9° N, 337.6° E): Clay-rich paleo-lake basin adjacent to Mawrth Vallis
+                 &lt;/div&gt;`,
+                {
+  &quot;sticky&quot;: true,
+}
+            );
+        
+    
+            var marker_e2df3617887fcd2d9dcd845d936634fa = L.marker(
+                [21.9, -22.4],
+                {
+}
+            ).addTo(feature_group_97607cb65bb0fa64b657ac4355797785);
+        
+    
+            var div_icon_db03fffd631a3a5b37f6fed2bfd613a4 = L.divIcon({
+  &quot;html&quot;: &quot;\n        \u003cdiv style=\&quot;font-size:9.5px; font-weight:700; color:#cbd5e1; background:rgba(15,23,42,0.75);\n                    border:1px solid #64748b; border-radius:6px; padding:2px 6px; white-space:nowrap;\n                    transform:translate(-50%, -50%); pointer-events:none;\&quot;\u003e\n            McLaughlin Crater (\u00d8 92 km)\n        \u003c/div\u003e\n    &quot;,
+  &quot;className&quot;: &quot;empty&quot;,
+});
+        
+    
+                marker_e2df3617887fcd2d9dcd845d936634fa.setIcon(div_icon_db03fffd631a3a5b37f6fed2bfd613a4);
+            
+    
+            var polygon_f31dc8b763c62ea1fac89fce939ec1cc = L.polygon(
+                [[24.85, -20.68], [24.85, -20.32], [24.55, -20.32], [24.55, -20.68]],
+                {&quot;bubblingMouseEvents&quot;: true, &quot;color&quot;: &quot;#38bdf8&quot;, &quot;dashArray&quot;: &quot;4, 4&quot;, &quot;dashOffset&quot;: null, &quot;fill&quot;: true, &quot;fillColor&quot;: &quot;#3b82f6&quot;, &quot;fillOpacity&quot;: 0.22, &quot;fillRule&quot;: &quot;evenodd&quot;, &quot;lineCap&quot;: &quot;round&quot;, &quot;lineJoin&quot;: &quot;round&quot;, &quot;noClip&quot;: false, &quot;opacity&quot;: 1.0, &quot;smoothFactor&quot;: 1.0, &quot;stroke&quot;: true, &quot;weight&quot;: 2.2}
+            ).addTo(feature_group_97607cb65bb0fa64b657ac4355797785);
+        
+    
+            polygon_f31dc8b763c62ea1fac89fce939ec1cc.bindTooltip(
+                `&lt;div&gt;
+                     CRISM + MOLA Exhumation Craters (24.7° N, 339.5° E): Minor craters exposing Fe/Mg-clays, Al-clays &amp; Silica
+                 &lt;/div&gt;`,
+                {
+  &quot;sticky&quot;: true,
+}
+            );
+        
+    
+            var marker_ea70ac32993d7f126e09ac7372b9379a = L.marker(
+                [25.04, -20.5],
+                {
+}
+            ).addTo(feature_group_97607cb65bb0fa64b657ac4355797785);
+        
+    
+            var div_icon_64ec4b81a555b4259d6f095779125201 = L.divIcon({
+  &quot;html&quot;: &quot;\n        \u003cdiv style=\&quot;font-size:9.5px; font-weight:800; color:#7dd3fc; background:rgba(15,23,42,0.84);\n                    border:1px solid #38bdf8; border-radius:6px; padding:2px 6px; white-space:nowrap;\n                    transform:translate(-50%, -50%); pointer-events:none;\&quot;\u003e\n            CRISM Exhumation Craters (24.7\u00b0 N)\n        \u003c/div\u003e\n    &quot;,
+  &quot;className&quot;: &quot;empty&quot;,
+});
+        
+    
+                marker_ea70ac32993d7f126e09ac7372b9379a.setIcon(div_icon_64ec4b81a555b4259d6f095779125201);
+            
+    
+            var circle_c90fdf732d5ce537cb2285a7e172d39a = L.circle(
+                [22.25, -17.9],
+                {&quot;bubblingMouseEvents&quot;: true, &quot;color&quot;: &quot;#f87171&quot;, &quot;dashArray&quot;: &quot;4, 4&quot;, &quot;dashOffset&quot;: null, &quot;fill&quot;: true, &quot;fillColor&quot;: &quot;#ef4444&quot;, &quot;fillOpacity&quot;: 0.14, &quot;fillRule&quot;: &quot;evenodd&quot;, &quot;lineCap&quot;: &quot;round&quot;, &quot;lineJoin&quot;: &quot;round&quot;, &quot;opacity&quot;: 1.0, &quot;radius&quot;: 24000, &quot;stroke&quot;: true, &quot;weight&quot;: 1.6}
+            ).addTo(feature_group_97607cb65bb0fa64b657ac4355797785);
+        
+    
+            circle_c90fdf732d5ce537cb2285a7e172d39a.bindTooltip(
+                `&lt;div&gt;
+                     Southern Mawrth Plateau (ExoMars Candidate Landing Zone · 22.25° N, 342.1° E)
+                 &lt;/div&gt;`,
+                {
+  &quot;sticky&quot;: true,
+}
+            );
+        
+    
+            var poly_line_a36a909d66f3498a9ff682c97f71a792 = L.polyline(
+                [[25.35, -21.1], [25.05, -20.35], [24.82, -19.65], [24.62, -19.15], [24.3, -18.55], [23.95, -18.35], [23.55, -18.22], [23.15, -18.15], [22.75, -18.02], [22.35, -17.85], [21.85, -17.55]],
+                {&quot;bubblingMouseEvents&quot;: true, &quot;color&quot;: &quot;#00B4D8&quot;, &quot;dashArray&quot;: &quot;6, 5&quot;, &quot;dashOffset&quot;: null, &quot;fill&quot;: false, &quot;fillColor&quot;: &quot;#00B4D8&quot;, &quot;fillOpacity&quot;: 0.2, &quot;fillRule&quot;: &quot;evenodd&quot;, &quot;lineCap&quot;: &quot;round&quot;, &quot;lineJoin&quot;: &quot;round&quot;, &quot;noClip&quot;: false, &quot;opacity&quot;: 0.92, &quot;smoothFactor&quot;: 1.0, &quot;stroke&quot;: true, &quot;weight&quot;: 3.8}
+            ).addTo(feature_group_97607cb65bb0fa64b657ac4355797785);
+        
+    
+            poly_line_a36a909d66f3498a9ff682c97f71a792.bindTooltip(
+                `&lt;div&gt;
+                     Mawrth Vallis Main Sinuous Outflow Channel (Noachian–Hesperian Boundary)
+                 &lt;/div&gt;`,
+                {
+  &quot;sticky&quot;: true,
+}
+            );
+        
+    
+            feature_group_97607cb65bb0fa64b657ac4355797785.addTo(map_22bfc861fa1f887a6c5ef1c25a6ccc59);
+        
+    
+            var feature_group_ad980e123207480c19f86e06ee8002a5 = L.featureGroup(
+                {
+}
+            );
+        
+    
+            var circle_marker_57eb9753cfb9befded8b1a6da960f368 = L.circleMarker(
+                [24.72, -20.45],
+                {&quot;bubblingMouseEvents&quot;: true, &quot;color&quot;: &quot;#ffffff&quot;, &quot;dashArray&quot;: null, &quot;dashOffset&quot;: null, &quot;fill&quot;: true, &quot;fillColor&quot;: &quot;#E67E22&quot;, &quot;fillOpacity&quot;: 0.95, &quot;fillRule&quot;: &quot;evenodd&quot;, &quot;lineCap&quot;: &quot;round&quot;, &quot;lineJoin&quot;: &quot;round&quot;, &quot;opacity&quot;: 1.0, &quot;radius&quot;: 11.5, &quot;stroke&quot;: true, &quot;weight&quot;: 2.6}
+            ).addTo(feature_group_ad980e123207480c19f86e06ee8002a5);
+        
+    
+        var popup_c60c6de70a8dacdebf09b656189a02bd = L.popup({
+  &quot;maxWidth&quot;: 400,
+});
+
+        
+            
+                var html_d7998f8cf86c7773b2cb85ef05102fff = $(`&lt;div id=&quot;html_d7998f8cf86c7773b2cb85ef05102fff&quot; style=&quot;width: 100.0%; height: 100.0%;&quot;&gt;     &lt;div class=&quot;popup-card-root&quot; style=&quot;font-family: &#x27;Segoe UI&#x27;, system-ui, -apple-system, sans-serif; width: 385px; max-width: 100%; font-size: 12.4px; line-height: 1.45; color: #1e293b; box-shadow: 0 12px 28px rgba(0,0,0,0.48); border-radius: 12px; overflow: hidden;&quot;&gt;         &lt;div style=&quot;background: linear-gradient(135deg, #E67E22, #0f172a); color: white; padding: 10px 13px;&quot;&gt;             &lt;div style=&quot;display:flex; justify-content:space-between; align-items:center; gap:6px; margin-bottom:4px; flex-wrap:wrap;&quot;&gt;                 &lt;span style=&quot;font-size:9.3px; text-transform:uppercase; letter-spacing:0.6px; background:rgba(255,255,255,0.2); padding:2px 8px; border-radius:10px; font-weight:700;&quot;&gt;                     Geology &amp; Mineralogy                 &lt;/span&gt;                 &lt;span style=&quot;font-size:9.8px; background:#090d16; color:#38bdf8; border:1px solid #38bdf8; padding:2px 8px; border-radius:10px; font-weight:700; white-space:nowrap;&quot;&gt;                     Match: Very High (94%)                 &lt;/span&gt;             &lt;/div&gt;             &lt;div style=&quot;font-weight: 800; font-size: 13.8px;&quot;&gt;Northern Outlet – Hydrated Silica (CRISM Yellow/Green)&lt;/div&gt;             &lt;div style=&quot;font-size: 10.8px; opacity: 0.92; margin-top:2px;&quot;&gt;Sector 24.7° N, 339.5° E (20.5° W) · Exhumation Craters&lt;/div&gt;         &lt;/div&gt;         &lt;div style=&quot;padding: 10px 13px; background: #ffffff; border: 1px solid #cbd5e1; border-top: none; border-radius: 0 0 12px 12px;&quot;&gt;                  &lt;svg viewBox=&quot;0 0 360 116&quot; width=&quot;100%&quot; style=&quot;background:#0f172a; border-radius:9px; margin-bottom:9px; border:1px solid #334155;&quot;&gt;       &lt;defs&gt;         &lt;linearGradient id=&quot;gQtz&quot; x1=&quot;0&quot; y1=&quot;0&quot; x2=&quot;1&quot; y2=&quot;0&quot;&gt;           &lt;stop offset=&quot;0%&quot; stop-color=&quot;#F8FAFC&quot;/&gt;&lt;stop offset=&quot;50%&quot; stop-color=&quot;#CBD5E1&quot;/&gt;&lt;stop offset=&quot;100%&quot; stop-color=&quot;#64748B&quot;/&gt;         &lt;/linearGradient&gt;       &lt;/defs&gt;       &lt;text x=&quot;12&quot; y=&quot;16&quot; fill=&quot;#FDBA74&quot; font-size=&quot;10&quot; font-weight=&quot;bold&quot; font-family=&quot;sans-serif&quot;&gt;QUARTZ (SiO₂) &amp;amp; HYDRATED SILICA (CRISM)&lt;/text&gt;       &lt;polygon points=&quot;36,90 36,46 48,30 60,46 60,90&quot; fill=&quot;url(#gQtz)&quot; stroke=&quot;#fff&quot; stroke-width=&quot;0.9&quot;/&gt;       &lt;polygon points=&quot;62,90 62,36 76,20 90,36 90,90&quot; fill=&quot;url(#gQtz)&quot; stroke=&quot;#fff&quot; stroke-width=&quot;1&quot;/&gt;       &lt;polygon points=&quot;92,90 92,52 103,38 114,52 114,90&quot; fill=&quot;url(#gQtz)&quot; stroke=&quot;#fff&quot; stroke-width=&quot;0.9&quot;/&gt;       &lt;text x=&quot;75&quot; y=&quot;107&quot; text-anchor=&quot;middle&quot; fill=&quot;#cbd5e1&quot; font-size=&quot;8&quot; font-family=&quot;sans-serif&quot;&gt;Quartz + Barite (White Rock)&lt;/text&gt;       &lt;rect x=&quot;134&quot; y=&quot;23&quot; width=&quot;214&quot; height=&quot;82&quot; rx=&quot;6&quot; fill=&quot;#1e293b&quot; stroke=&quot;#E67E22&quot; stroke-width=&quot;1&quot;/&gt;       &lt;text x=&quot;142&quot; y=&quot;38&quot; fill=&quot;#fdba74&quot; font-size=&quot;8.8&quot; font-weight=&quot;bold&quot; font-family=&quot;sans-serif&quot;&gt;CRISM Mapping (24.7° N, 339.5° E)&lt;/text&gt;       &lt;text x=&quot;142&quot; y=&quot;52&quot; fill=&quot;#e2e8f0&quot; font-size=&quot;8.1&quot; font-family=&quot;sans-serif&quot;&gt;• Mapped in Yellow/Green by CRISM&lt;/text&gt;       &lt;text x=&quot;142&quot; y=&quot;66&quot; fill=&quot;#e2e8f0&quot; font-size=&quot;8.1&quot; font-family=&quot;sans-serif&quot;&gt;• Diagnostic Si-OH doublet: 2.21 µm&lt;/text&gt;       &lt;text x=&quot;142&quot; y=&quot;80&quot; fill=&quot;#e2e8f0&quot; font-size=&quot;8.1&quot; font-family=&quot;sans-serif&quot;&gt;• Siliceous residue after acid leaching&lt;/text&gt;       &lt;text x=&quot;142&quot; y=&quot;94&quot; fill=&quot;#fb923c&quot; font-size=&quot;8&quot; font-weight=&quot;bold&quot; font-family=&quot;sans-serif&quot;&gt;• Exhumed by minor impact craters&lt;/text&gt;     &lt;/svg&gt;                  &lt;div&gt;&lt;b&gt;Highest hydrated silica concentration:&lt;/b&gt; Minor impact craters puncture the dark caprock, exposing opaline/hydrated silica (yellow/green in CRISM).&lt;/div&gt;             &lt;div style=&quot;margin-top:8px; background:#f1f5f9; border:1px solid #cbd5e1; border-radius:7px; padding:7px 9px; font-size:10.6px; color:#0f172a;&quot;&gt;                 &lt;div style=&quot;font-weight:800; color:#0369a1; margin-bottom:2px; text-transform:uppercase; font-size:9.3px;&quot;&gt;🛰️ Cross-Planetary Telemetry Fusion (MRO / THEMIS / MOLA ↔ Field)&lt;/div&gt;                 &lt;b&gt;MRO CRISM:&lt;/b&gt; Diagnostic Si-OH doublet at &lt;b&gt;2.21 µm&lt;/b&gt;.&lt;br&gt;&lt;b&gt;Parys Mtn Analog:&lt;/b&gt; Leached massive quartz of &lt;b&gt;White Rock&lt;/b&gt;.             &lt;/div&gt;             &lt;div style=&quot;margin-top:7px; padding-top:5px; border-top:1px dashed #cbd5e1; font-size:10px; color:#64748b; display:flex; justify-content:space-between; flex-wrap:wrap; gap:4px;&quot;&gt;                 &lt;span&gt;&lt;b&gt;Source:&lt;/b&gt; NASA MRO CRISM + MOLA (21 Sept 2007)&lt;/span&gt;                 &lt;span style=&quot;color:#E67E22; font-weight:700;&quot;&gt;● Color-Synced&lt;/span&gt;             &lt;/div&gt;         &lt;/div&gt;     &lt;/div&gt;     &lt;/div&gt;`)[0];
+                popup_c60c6de70a8dacdebf09b656189a02bd.setContent(html_d7998f8cf86c7773b2cb85ef05102fff);
+            
+        
+
+        circle_marker_57eb9753cfb9befded8b1a6da960f368.bindPopup(popup_c60c6de70a8dacdebf09b656189a02bd)
+        ;
+
+        
+    
+    
+            circle_marker_57eb9753cfb9befded8b1a6da960f368.bindTooltip(
+                `&lt;div&gt;
+                     [Geology &amp; Mineralogy] Northern Outlet – Hydrated Silica (CRISM Yellow/Green)
+                 &lt;/div&gt;`,
+                {
+  &quot;sticky&quot;: true,
+}
+            );
+        
+    
+            var circle_marker_6ca510b7542c10178b7c546e8fafad36 = L.circleMarker(
+                [24.62, -19.15],
+                {&quot;bubblingMouseEvents&quot;: true, &quot;color&quot;: &quot;#ffffff&quot;, &quot;dashArray&quot;: null, &quot;dashOffset&quot;: null, &quot;fill&quot;: true, &quot;fillColor&quot;: &quot;#F1C40F&quot;, &quot;fillOpacity&quot;: 0.95, &quot;fillRule&quot;: &quot;evenodd&quot;, &quot;lineCap&quot;: &quot;round&quot;, &quot;lineJoin&quot;: &quot;round&quot;, &quot;opacity&quot;: 1.0, &quot;radius&quot;: 11.5, &quot;stroke&quot;: true, &quot;weight&quot;: 2.6}
+            ).addTo(feature_group_ad980e123207480c19f86e06ee8002a5);
+        
+    
+        var popup_a92a3e776c36c0b3a03f2ea7d32638d5 = L.popup({
+  &quot;maxWidth&quot;: 400,
+});
+
+        
+            
+                var html_84aa450970c454e678544cd63c7c1717 = $(`&lt;div id=&quot;html_84aa450970c454e678544cd63c7c1717&quot; style=&quot;width: 100.0%; height: 100.0%;&quot;&gt;     &lt;div class=&quot;popup-card-root&quot; style=&quot;font-family: &#x27;Segoe UI&#x27;, system-ui, -apple-system, sans-serif; width: 385px; max-width: 100%; font-size: 12.4px; line-height: 1.45; color: #1e293b; box-shadow: 0 12px 28px rgba(0,0,0,0.48); border-radius: 12px; overflow: hidden;&quot;&gt;         &lt;div style=&quot;background: linear-gradient(135deg, #F1C40F, #0f172a); color: white; padding: 10px 13px;&quot;&gt;             &lt;div style=&quot;display:flex; justify-content:space-between; align-items:center; gap:6px; margin-bottom:4px; flex-wrap:wrap;&quot;&gt;                 &lt;span style=&quot;font-size:9.3px; text-transform:uppercase; letter-spacing:0.6px; background:rgba(255,255,255,0.2); padding:2px 8px; border-radius:10px; font-weight:700;&quot;&gt;                     Geology &amp; Mineralogy                 &lt;/span&gt;                 &lt;span style=&quot;font-size:9.8px; background:#090d16; color:#38bdf8; border:1px solid #38bdf8; padding:2px 8px; border-radius:10px; font-weight:700; white-space:nowrap;&quot;&gt;                     Match: Very High (96%)                 &lt;/span&gt;             &lt;/div&gt;             &lt;div style=&quot;font-weight: 800; font-size: 13.8px;&quot;&gt;Mawrth Vallis Northern Bend – Jarosite Horizon&lt;/div&gt;             &lt;div style=&quot;font-size: 10.8px; opacity: 0.92; margin-top:2px;&quot;&gt;Peak ferric-sulfate signature (pH &lt; 3.5 aqueous event)&lt;/div&gt;         &lt;/div&gt;         &lt;div style=&quot;padding: 10px 13px; background: #ffffff; border: 1px solid #cbd5e1; border-top: none; border-radius: 0 0 12px 12px;&quot;&gt;                  &lt;svg viewBox=&quot;0 0 360 116&quot; width=&quot;100%&quot; style=&quot;background:#0f172a; border-radius:9px; margin-bottom:9px; border:1px solid #334155;&quot;&gt;       &lt;defs&gt;         &lt;linearGradient id=&quot;gJar1&quot; x1=&quot;0&quot; y1=&quot;0&quot; x2=&quot;1&quot; y2=&quot;1&quot;&gt;           &lt;stop offset=&quot;0%&quot; stop-color=&quot;#FEF08A&quot;/&gt;&lt;stop offset=&quot;50%&quot; stop-color=&quot;#EAB308&quot;/&gt;&lt;stop offset=&quot;100%&quot; stop-color=&quot;#854D0E&quot;/&gt;         &lt;/linearGradient&gt;         &lt;linearGradient id=&quot;gJar2&quot; x1=&quot;0&quot; y1=&quot;1&quot; x2=&quot;1&quot; y2=&quot;0&quot;&gt;           &lt;stop offset=&quot;0%&quot; stop-color=&quot;#CA8A04&quot;/&gt;&lt;stop offset=&quot;100%&quot; stop-color=&quot;#FEF9C3&quot;/&gt;         &lt;/linearGradient&gt;       &lt;/defs&gt;       &lt;text x=&quot;12&quot; y=&quot;16&quot; fill=&quot;#FDE047&quot; font-size=&quot;10&quot; font-weight=&quot;bold&quot; font-family=&quot;sans-serif&quot;&gt;JAROSITE · KFe₃(SO₄)₂(OH)₆ (HYPERACID WATER INDEX)&lt;/text&gt;       &lt;path d=&quot;M14,98 Q45,78 85,84 T145,98 Z&quot; fill=&quot;#451a03&quot; stroke=&quot;#78350f&quot; stroke-width=&quot;1&quot;/&gt;       &lt;polygon points=&quot;48,86 36,62 54,48 72,62 62,86&quot; fill=&quot;url(#gJar1)&quot; stroke=&quot;#fef08a&quot; stroke-width=&quot;0.9&quot;/&gt;       &lt;polygon points=&quot;74,88 66,56 86,40 104,58 92,88&quot; fill=&quot;url(#gJar2)&quot; stroke=&quot;#fef08a&quot; stroke-width=&quot;0.9&quot;/&gt;       &lt;polygon points=&quot;102,89 96,68 112,58 126,70 118,89&quot; fill=&quot;url(#gJar1)&quot; stroke=&quot;#fde047&quot; stroke-width=&quot;0.8&quot;/&gt;       &lt;text x=&quot;78&quot; y=&quot;110&quot; text-anchor=&quot;middle&quot; fill=&quot;#cbd5e1&quot; font-size=&quot;8&quot; font-family=&quot;sans-serif&quot;&gt;Trigonal habit · Vitreous luster&lt;/text&gt;       &lt;rect x=&quot;155&quot; y=&quot;22&quot; width=&quot;193&quot; height=&quot;84&quot; rx=&quot;6&quot; fill=&quot;#1e293b&quot; stroke=&quot;#475569&quot; stroke-width=&quot;1&quot;/&gt;       &lt;text x=&quot;164&quot; y=&quot;36&quot; fill=&quot;#f8fafc&quot; font-size=&quot;8.8&quot; font-weight=&quot;bold&quot; font-family=&quot;sans-serif&quot;&gt;MRO CRISM Spectrum (VNIR)&lt;/text&gt;       &lt;polyline fill=&quot;none&quot; stroke=&quot;#F1C40F&quot; stroke-width=&quot;2.2&quot; points=&quot;166,78 185,86 204,49 232,44 262,82 292,46 332,43&quot;/&gt;       &lt;circle cx=&quot;185&quot; cy=&quot;86&quot; r=&quot;3&quot; fill=&quot;#ef4444&quot;/&gt;&lt;circle cx=&quot;262&quot; cy=&quot;82&quot; r=&quot;3&quot; fill=&quot;#ef4444&quot;/&gt;       &lt;text x=&quot;172&quot; y=&quot;98&quot; fill=&quot;#94a3b8&quot; font-size=&quot;7.6&quot; font-family=&quot;sans-serif&quot;&gt;0.43 µm&lt;/text&gt;       &lt;text x=&quot;242&quot; y=&quot;98&quot; fill=&quot;#94a3b8&quot; font-size=&quot;7.6&quot; font-family=&quot;sans-serif&quot;&gt;0.91 µm (Fe³⁺)&lt;/text&gt;       &lt;text x=&quot;296&quot; y=&quot;68&quot; fill=&quot;#fde047&quot; font-size=&quot;8&quot; font-weight=&quot;bold&quot; font-family=&quot;sans-serif&quot;&gt;pH &amp;lt; 3.5&lt;/text&gt;     &lt;/svg&gt;                  &lt;div&gt;Key &lt;b&gt;jarosite&lt;/b&gt; outcrop exposed along the northern canyon bend, recording the transition from neutral clays to hyperacid brines.&lt;/div&gt;             &lt;div style=&quot;margin-top:8px; background:#f1f5f9; border:1px solid #cbd5e1; border-radius:7px; padding:7px 9px; font-size:10.6px; color:#0f172a;&quot;&gt;                 &lt;div style=&quot;font-weight:800; color:#0369a1; margin-bottom:2px; text-transform:uppercase; font-size:9.3px;&quot;&gt;🛰️ Cross-Planetary Telemetry Fusion (MRO / THEMIS / MOLA ↔ Field)&lt;/div&gt;                 &lt;b&gt;MRO CRISM:&lt;/b&gt; Absorptions at &lt;b&gt;0.43 µm, 0.91 µm &amp;amp; 2.26 µm&lt;/b&gt;.&lt;br&gt;&lt;b&gt;Parys Mtn Analog:&lt;/b&gt; Crystalline jarosite crusts at &lt;b&gt;Mona Mine&lt;/b&gt; (pH &amp;lt; 2.8).             &lt;/div&gt;             &lt;div style=&quot;margin-top:7px; padding-top:5px; border-top:1px dashed #cbd5e1; font-size:10px; color:#64748b; display:flex; justify-content:space-between; flex-wrap:wrap; gap:4px;&quot;&gt;                 &lt;span&gt;&lt;b&gt;Source:&lt;/b&gt; MRO CRISM · Mawrth Vallis&lt;/span&gt;                 &lt;span style=&quot;color:#F1C40F; font-weight:700;&quot;&gt;● Color-Synced&lt;/span&gt;             &lt;/div&gt;         &lt;/div&gt;     &lt;/div&gt;     &lt;/div&gt;`)[0];
+                popup_a92a3e776c36c0b3a03f2ea7d32638d5.setContent(html_84aa450970c454e678544cd63c7c1717);
+            
+        
+
+        circle_marker_6ca510b7542c10178b7c546e8fafad36.bindPopup(popup_a92a3e776c36c0b3a03f2ea7d32638d5)
+        ;
+
+        
+    
+    
+            circle_marker_6ca510b7542c10178b7c546e8fafad36.bindTooltip(
+                `&lt;div&gt;
+                     [Geology &amp; Mineralogy] Mawrth Vallis Northern Bend – Jarosite Horizon
+                 &lt;/div&gt;`,
+                {
+  &quot;sticky&quot;: true,
+}
+            );
+        
+    
+            var circle_marker_d7095f361170baaa13dcaae107df31db = L.circleMarker(
+                [22.35, -17.85],
+                {&quot;bubblingMouseEvents&quot;: true, &quot;color&quot;: &quot;#ffffff&quot;, &quot;dashArray&quot;: null, &quot;dashOffset&quot;: null, &quot;fill&quot;: true, &quot;fillColor&quot;: &quot;#C0392B&quot;, &quot;fillOpacity&quot;: 0.95, &quot;fillRule&quot;: &quot;evenodd&quot;, &quot;lineCap&quot;: &quot;round&quot;, &quot;lineJoin&quot;: &quot;round&quot;, &quot;opacity&quot;: 1.0, &quot;radius&quot;: 11.5, &quot;stroke&quot;: true, &quot;weight&quot;: 2.6}
+            ).addTo(feature_group_ad980e123207480c19f86e06ee8002a5);
+        
+    
+        var popup_cd7c4fa98d02c137ee4f139be852f556 = L.popup({
+  &quot;maxWidth&quot;: 400,
+});
+
+        
+            
+                var html_831dc0e18d473690669d48fd16ca9289 = $(`&lt;div id=&quot;html_831dc0e18d473690669d48fd16ca9289&quot; style=&quot;width: 100.0%; height: 100.0%;&quot;&gt;     &lt;div class=&quot;popup-card-root&quot; style=&quot;font-family: &#x27;Segoe UI&#x27;, system-ui, -apple-system, sans-serif; width: 385px; max-width: 100%; font-size: 12.4px; line-height: 1.45; color: #1e293b; box-shadow: 0 12px 28px rgba(0,0,0,0.48); border-radius: 12px; overflow: hidden;&quot;&gt;         &lt;div style=&quot;background: linear-gradient(135deg, #C0392B, #0f172a); color: white; padding: 10px 13px;&quot;&gt;             &lt;div style=&quot;display:flex; justify-content:space-between; align-items:center; gap:6px; margin-bottom:4px; flex-wrap:wrap;&quot;&gt;                 &lt;span style=&quot;font-size:9.3px; text-transform:uppercase; letter-spacing:0.6px; background:rgba(255,255,255,0.2); padding:2px 8px; border-radius:10px; font-weight:700;&quot;&gt;                     Geology &amp; Mineralogy                 &lt;/span&gt;                 &lt;span style=&quot;font-size:9.8px; background:#090d16; color:#38bdf8; border:1px solid #38bdf8; padding:2px 8px; border-radius:10px; font-weight:700; white-space:nowrap;&quot;&gt;                     Match: Very High (95%)                 &lt;/span&gt;             &lt;/div&gt;             &lt;div style=&quot;font-weight: 800; font-size: 13.8px;&quot;&gt;Southeast Sector (ExoMars Plateau) – Layered Sulfates&lt;/div&gt;             &lt;div style=&quot;font-size: 10.8px; opacity: 0.92; margin-top:2px;&quot;&gt;Evaporitic acid-sulfate deposits (22.35° N, 342.15° E)&lt;/div&gt;         &lt;/div&gt;         &lt;div style=&quot;padding: 10px 13px; background: #ffffff; border: 1px solid #cbd5e1; border-top: none; border-radius: 0 0 12px 12px;&quot;&gt;                  &lt;svg viewBox=&quot;0 0 360 116&quot; width=&quot;100%&quot; style=&quot;background:#0f172a; border-radius:9px; margin-bottom:9px; border:1px solid #334155;&quot;&gt;       &lt;defs&gt;         &lt;linearGradient id=&quot;gAng&quot; x1=&quot;0&quot; y1=&quot;0&quot; x2=&quot;1&quot; y2=&quot;1&quot;&gt;           &lt;stop offset=&quot;0%&quot; stop-color=&quot;#FFFFFF&quot;/&gt;&lt;stop offset=&quot;55%&quot; stop-color=&quot;#E2E8F0&quot;/&gt;&lt;stop offset=&quot;100%&quot; stop-color=&quot;#94A3B8&quot;/&gt;         &lt;/linearGradient&gt;       &lt;/defs&gt;       &lt;text x=&quot;12&quot; y=&quot;16&quot; fill=&quot;#FCA5A5&quot; font-size=&quot;10&quot; font-weight=&quot;bold&quot; font-family=&quot;sans-serif&quot;&gt;ANGLESITE (PbSO₄) &amp;amp; EVAPORITIC SULFATES&lt;/text&gt;       &lt;path d=&quot;M16,92 C22,46 135,46 146,92 Z&quot; fill=&quot;#27272a&quot; stroke=&quot;#7f1d1d&quot; stroke-width=&quot;1.5&quot;/&gt;       &lt;polygon points=&quot;52,86 44,48 58,34 72,48 66,86&quot; fill=&quot;url(#gAng)&quot; stroke=&quot;#ffffff&quot; stroke-width=&quot;1&quot;/&gt;       &lt;polygon points=&quot;82,88 76,42 92,28 106,42 98,88&quot; fill=&quot;url(#gAng)&quot; stroke=&quot;#ffffff&quot; stroke-width=&quot;1&quot;/&gt;       &lt;polygon points=&quot;108,89 106,60 118,50 128,60 122,89&quot; fill=&quot;url(#gAng)&quot; stroke=&quot;#e2e8f0&quot; stroke-width=&quot;0.8&quot;/&gt;       &lt;text x=&quot;82&quot; y=&quot;107&quot; text-anchor=&quot;middle&quot; fill=&quot;#cbd5e1&quot; font-size=&quot;8&quot; font-family=&quot;sans-serif&quot;&gt;Orthorhombic prism · Adamantine&lt;/text&gt;       &lt;rect x=&quot;162&quot; y=&quot;23&quot; width=&quot;186&quot; height=&quot;82&quot; rx=&quot;6&quot; fill=&quot;#1e293b&quot; stroke=&quot;#C0392B&quot; stroke-width=&quot;1&quot;/&gt;       &lt;text x=&quot;170&quot; y=&quot;38&quot; fill=&quot;#fca5a5&quot; font-size=&quot;8.8&quot; font-weight=&quot;bold&quot; font-family=&quot;sans-serif&quot;&gt;CRISM + HiRISE Fusion&lt;/text&gt;       &lt;text x=&quot;170&quot; y=&quot;52&quot; fill=&quot;#e2e8f0&quot; font-size=&quot;8.1&quot; font-family=&quot;sans-serif&quot;&gt;• SO₄²⁻ Bands: 1.94 &amp;amp; 2.40 µm&lt;/text&gt;       &lt;text x=&quot;170&quot; y=&quot;66&quot; fill=&quot;#e2e8f0&quot; font-size=&quot;8.1&quot; font-family=&quot;sans-serif&quot;&gt;• HiRISE: Light-toned fractured strata&lt;/text&gt;       &lt;text x=&quot;170&quot; y=&quot;80&quot; fill=&quot;#e2e8f0&quot; font-size=&quot;8.1&quot; font-family=&quot;sans-serif&quot;&gt;• Kuroko VMS / Evaporite paragenesis&lt;/text&gt;       &lt;text x=&quot;170&quot; y=&quot;94&quot; fill=&quot;#f87171&quot; font-size=&quot;8&quot; font-weight=&quot;bold&quot; font-family=&quot;sans-serif&quot;&gt;• World type locality: Parys Mtn&lt;/text&gt;     &lt;/svg&gt;                  &lt;div&gt;High-density exposure of &lt;b&gt;polyhydrated and evaporitic sulfates&lt;/b&gt; capping the southeastern entrance of Mawrth Vallis.&lt;/div&gt;             &lt;div style=&quot;margin-top:8px; background:#f1f5f9; border:1px solid #cbd5e1; border-radius:7px; padding:7px 9px; font-size:10.6px; color:#0f172a;&quot;&gt;                 &lt;div style=&quot;font-weight:800; color:#0369a1; margin-bottom:2px; text-transform:uppercase; font-size:9.3px;&quot;&gt;🛰️ Cross-Planetary Telemetry Fusion (MRO / THEMIS / MOLA ↔ Field)&lt;/div&gt;                 &lt;b&gt;MRO CRISM:&lt;/b&gt; Vibrational SO₄²⁻ bands (1.94 &amp;amp; 2.40 µm) interbedded with smectites.&lt;br&gt;&lt;b&gt;Parys Mtn Analog:&lt;/b&gt; &lt;b&gt;Anglesite (PbSO₄)&lt;/b&gt; and supergene gossan sulfates.             &lt;/div&gt;             &lt;div style=&quot;margin-top:7px; padding-top:5px; border-top:1px dashed #cbd5e1; font-size:10px; color:#64748b; display:flex; justify-content:space-between; flex-wrap:wrap; gap:4px;&quot;&gt;                 &lt;span&gt;&lt;b&gt;Source:&lt;/b&gt; MRO CRISM / Parys Underground Group&lt;/span&gt;                 &lt;span style=&quot;color:#C0392B; font-weight:700;&quot;&gt;● Color-Synced&lt;/span&gt;             &lt;/div&gt;         &lt;/div&gt;     &lt;/div&gt;     &lt;/div&gt;`)[0];
+                popup_cd7c4fa98d02c137ee4f139be852f556.setContent(html_831dc0e18d473690669d48fd16ca9289);
+            
+        
+
+        circle_marker_d7095f361170baaa13dcaae107df31db.bindPopup(popup_cd7c4fa98d02c137ee4f139be852f556)
+        ;
+
+        
+    
+    
+            circle_marker_d7095f361170baaa13dcaae107df31db.bindTooltip(
+                `&lt;div&gt;
+                     [Geology &amp; Mineralogy] Southeast Sector (ExoMars Plateau) – Layered Sulfates
+                 &lt;/div&gt;`,
+                {
+  &quot;sticky&quot;: true,
+}
+            );
+        
+    
+            feature_group_ad980e123207480c19f86e06ee8002a5.addTo(map_22bfc861fa1f887a6c5ef1c25a6ccc59);
+        
+    
+            var feature_group_e0ad00b1d41a3f02cf56d69df4605477 = L.featureGroup(
+                {
+}
+            );
+        
+    
+            var circle_marker_8eae7d40282761faf245f3c1d33ef505 = L.circleMarker(
+                [24.82, -19.65],
+                {&quot;bubblingMouseEvents&quot;: true, &quot;color&quot;: &quot;#ffffff&quot;, &quot;dashArray&quot;: null, &quot;dashOffset&quot;: null, &quot;fill&quot;: true, &quot;fillColor&quot;: &quot;#3498DB&quot;, &quot;fillOpacity&quot;: 0.95, &quot;fillRule&quot;: &quot;evenodd&quot;, &quot;lineCap&quot;: &quot;round&quot;, &quot;lineJoin&quot;: &quot;round&quot;, &quot;opacity&quot;: 1.0, &quot;radius&quot;: 11.5, &quot;stroke&quot;: true, &quot;weight&quot;: 2.6}
+            ).addTo(feature_group_e0ad00b1d41a3f02cf56d69df4605477);
+        
+    
+        var popup_b26304ae80aaaaa538560af87cf47f9f = L.popup({
+  &quot;maxWidth&quot;: 400,
+});
+
+        
+            
+                var html_ce36008f96b8f5ab08903b4e792553d3 = $(`&lt;div id=&quot;html_ce36008f96b8f5ab08903b4e792553d3&quot; style=&quot;width: 100.0%; height: 100.0%;&quot;&gt;     &lt;div class=&quot;popup-card-root&quot; style=&quot;font-family: &#x27;Segoe UI&#x27;, system-ui, -apple-system, sans-serif; width: 385px; max-width: 100%; font-size: 12.4px; line-height: 1.45; color: #1e293b; box-shadow: 0 12px 28px rgba(0,0,0,0.48); border-radius: 12px; overflow: hidden;&quot;&gt;         &lt;div style=&quot;background: linear-gradient(135deg, #3498DB, #0f172a); color: white; padding: 10px 13px;&quot;&gt;             &lt;div style=&quot;display:flex; justify-content:space-between; align-items:center; gap:6px; margin-bottom:4px; flex-wrap:wrap;&quot;&gt;                 &lt;span style=&quot;font-size:9.3px; text-transform:uppercase; letter-spacing:0.6px; background:rgba(255,255,255,0.2); padding:2px 8px; border-radius:10px; font-weight:700;&quot;&gt;                     Dust &amp; Weathering                 &lt;/span&gt;                 &lt;span style=&quot;font-size:9.8px; background:#090d16; color:#38bdf8; border:1px solid #38bdf8; padding:2px 8px; border-radius:10px; font-weight:700; white-space:nowrap;&quot;&gt;                     Match: Medium-High (82%)                 &lt;/span&gt;             &lt;/div&gt;             &lt;div style=&quot;font-weight: 800; font-size: 13.8px;&quot;&gt;Northern Canyon Rim – CRISM Fe/Mg → Al Clay Sequence&lt;/div&gt;             &lt;div style=&quot;font-size: 10.8px; opacity: 0.92; margin-top:2px;&quot;&gt;Complete acid-weathering stratigraphic profile&lt;/div&gt;         &lt;/div&gt;         &lt;div style=&quot;padding: 10px 13px; background: #ffffff; border: 1px solid #cbd5e1; border-top: none; border-radius: 0 0 12px 12px;&quot;&gt;                  &lt;svg viewBox=&quot;0 0 360 120&quot; width=&quot;100%&quot; style=&quot;background:#090d16; border-radius:9px; margin-bottom:9px; border:1px solid #38bdf8;&quot;&gt;       &lt;text x=&quot;12&quot; y=&quot;15&quot; fill=&quot;#38bdf8&quot; font-size=&quot;9.6&quot; font-weight=&quot;bold&quot; font-family=&quot;sans-serif&quot;&gt;3D CRISM + MOLA FUSION · MAWRTH VALLIS (10 KM)&lt;/text&gt;       &lt;polygon points=&quot;88,21 128,41 156,71 122,110 74,92 34,76 54,49&quot; fill=&quot;#1d4ed8&quot; opacity=&quot;0.74&quot; stroke=&quot;#60a5fa&quot; stroke-width=&quot;0.9&quot;/&gt;       &lt;polygon points=&quot;54,49 94,55 84,82 34,76&quot; fill=&quot;#dc2626&quot; opacity=&quot;0.78&quot; stroke=&quot;#f87171&quot; stroke-width=&quot;0.8&quot;/&gt;       &lt;polygon points=&quot;86,59 122,63 134,86 98,98&quot; fill=&quot;#84cc16&quot; opacity=&quot;0.88&quot; stroke=&quot;#fef08a&quot; stroke-width=&quot;0.9&quot;/&gt;       &lt;line x1=&quot;65&quot; y1=&quot;35&quot; x2=&quot;112&quot; y2=&quot;102&quot; stroke=&quot;#93c5fd&quot; stroke-width=&quot;0.5&quot; opacity=&quot;0.6&quot;/&gt;       &lt;line x1=&quot;88&quot; y1=&quot;21&quot; x2=&quot;122&quot; y2=&quot;110&quot; stroke=&quot;#93c5fd&quot; stroke-width=&quot;0.5&quot; opacity=&quot;0.6&quot;/&gt;       &lt;rect x=&quot;164&quot; y=&quot;21&quot; width=&quot;184&quot; height=&quot;88&quot; rx=&quot;6&quot; fill=&quot;#1e293b&quot; stroke=&quot;#334155&quot; stroke-width=&quot;1&quot;/&gt;       &lt;circle cx=&quot;176&quot; cy=&quot;35&quot; r=&quot;4.2&quot; fill=&quot;#ef4444&quot;/&gt;&lt;text x=&quot;186&quot; y=&quot;38&quot; fill=&quot;#f8fafc&quot; font-size=&quot;8.1&quot; font-family=&quot;sans-serif&quot;&gt;Red: Fe/Mg-Phyllosilicate (2.30 µm)&lt;/text&gt;       &lt;circle cx=&quot;176&quot; cy=&quot;51&quot; r=&quot;4.2&quot; fill=&quot;#3b82f6&quot;/&gt;&lt;text x=&quot;186&quot; y=&quot;54&quot; fill=&quot;#f8fafc&quot; font-size=&quot;8.1&quot; font-family=&quot;sans-serif&quot;&gt;Blue: Al-Phyllosilicate (2.20 µm)&lt;/text&gt;       &lt;circle cx=&quot;176&quot; cy=&quot;67&quot; r=&quot;4.2&quot; fill=&quot;#a3e635&quot;/&gt;&lt;text x=&quot;186&quot; y=&quot;70&quot; fill=&quot;#f8fafc&quot; font-size=&quot;8.1&quot; font-family=&quot;sans-serif&quot;&gt;Yellow/Green: Silica + Fe²⁺ Phase&lt;/text&gt;       &lt;text x=&quot;172&quot; y=&quot;86&quot; fill=&quot;#94a3b8&quot; font-size=&quot;7.8&quot; font-family=&quot;sans-serif&quot;&gt;MOLA DEM: 10x vertical exaggeration&lt;/text&gt;       &lt;text x=&quot;172&quot; y=&quot;100&quot; fill=&quot;#38bdf8&quot; font-size=&quot;7.9&quot; font-weight=&quot;bold&quot; font-family=&quot;sans-serif&quot;&gt;Efflorescence: Melanterite / Kieserite&lt;/text&gt;     &lt;/svg&gt;                  &lt;div&gt;Vertical transition from basal &lt;b&gt;Fe/Mg-phyllosilicates (red)&lt;/b&gt; to upper &lt;b&gt;Al-phyllosilicates (blue)&lt;/b&gt; driven by acid leaching and dehydration.&lt;/div&gt;             &lt;div style=&quot;margin-top:8px; background:#f1f5f9; border:1px solid #cbd5e1; border-radius:7px; padding:7px 9px; font-size:10.6px; color:#0f172a;&quot;&gt;                 &lt;div style=&quot;font-weight:800; color:#0369a1; margin-bottom:2px; text-transform:uppercase; font-size:9.3px;&quot;&gt;🛰️ Cross-Planetary Telemetry Fusion (MRO / THEMIS / MOLA ↔ Field)&lt;/div&gt;                 &lt;b&gt;MRO CRISM + HiRISE:&lt;/b&gt; 2.30 µm (Fe/Mg) → 2.20 µm (Al) bands across fractured strata.&lt;br&gt;&lt;b&gt;Parys Mtn Analog:&lt;/b&gt; Argillic leaching &amp;amp; sulfate efflorescence at &lt;b&gt;Mona Mine&lt;/b&gt;.             &lt;/div&gt;             &lt;div style=&quot;margin-top:7px; padding-top:5px; border-top:1px dashed #cbd5e1; font-size:10px; color:#64748b; display:flex; justify-content:space-between; flex-wrap:wrap; gap:4px;&quot;&gt;                 &lt;span&gt;&lt;b&gt;Source:&lt;/b&gt; NASA MRO CRISM + HiRISE&lt;/span&gt;                 &lt;span style=&quot;color:#3498DB; font-weight:700;&quot;&gt;● Color-Synced&lt;/span&gt;             &lt;/div&gt;         &lt;/div&gt;     &lt;/div&gt;     &lt;/div&gt;`)[0];
+                popup_b26304ae80aaaaa538560af87cf47f9f.setContent(html_ce36008f96b8f5ab08903b4e792553d3);
+            
+        
+
+        circle_marker_8eae7d40282761faf245f3c1d33ef505.bindPopup(popup_b26304ae80aaaaa538560af87cf47f9f)
+        ;
+
+        
+    
+    
+            circle_marker_8eae7d40282761faf245f3c1d33ef505.bindTooltip(
+                `&lt;div&gt;
+                     [Dust &amp; Weathering] Northern Canyon Rim – CRISM Fe/Mg → Al Clay Sequence
+                 &lt;/div&gt;`,
+                {
+  &quot;sticky&quot;: true,
+}
+            );
+        
+    
+            feature_group_e0ad00b1d41a3f02cf56d69df4605477.addTo(map_22bfc861fa1f887a6c5ef1c25a6ccc59);
+        
+    
+            var feature_group_90ede6860ec8ce5ed8ace56087a40e92 = L.featureGroup(
+                {
+}
+            );
+        
+    
+            var circle_marker_2a3f6c1edeb264963fb10130c8164721 = L.circleMarker(
+                [23.35, -18.18],
+                {&quot;bubblingMouseEvents&quot;: true, &quot;color&quot;: &quot;#ffffff&quot;, &quot;dashArray&quot;: null, &quot;dashOffset&quot;: null, &quot;fill&quot;: true, &quot;fillColor&quot;: &quot;#00B4D8&quot;, &quot;fillOpacity&quot;: 0.95, &quot;fillRule&quot;: &quot;evenodd&quot;, &quot;lineCap&quot;: &quot;round&quot;, &quot;lineJoin&quot;: &quot;round&quot;, &quot;opacity&quot;: 1.0, &quot;radius&quot;: 11.5, &quot;stroke&quot;: true, &quot;weight&quot;: 2.6}
+            ).addTo(feature_group_90ede6860ec8ce5ed8ace56087a40e92);
+        
+    
+        var popup_12816a2b791ad3440884c02382e1233b = L.popup({
+  &quot;maxWidth&quot;: 400,
+});
+
+        
+            
+                var html_9623f862d6f6449b64f4fe93b5cb38e7 = $(`&lt;div id=&quot;html_9623f862d6f6449b64f4fe93b5cb38e7&quot; style=&quot;width: 100.0%; height: 100.0%;&quot;&gt;     &lt;div class=&quot;popup-card-root&quot; style=&quot;font-family: &#x27;Segoe UI&#x27;, system-ui, -apple-system, sans-serif; width: 385px; max-width: 100%; font-size: 12.4px; line-height: 1.45; color: #1e293b; box-shadow: 0 12px 28px rgba(0,0,0,0.48); border-radius: 12px; overflow: hidden;&quot;&gt;         &lt;div style=&quot;background: linear-gradient(135deg, #00B4D8, #0f172a); color: white; padding: 10px 13px;&quot;&gt;             &lt;div style=&quot;display:flex; justify-content:space-between; align-items:center; gap:6px; margin-bottom:4px; flex-wrap:wrap;&quot;&gt;                 &lt;span style=&quot;font-size:9.3px; text-transform:uppercase; letter-spacing:0.6px; background:rgba(255,255,255,0.2); padding:2px 8px; border-radius:10px; font-weight:700;&quot;&gt;                     Water Chemistry &amp; Climate                 &lt;/span&gt;                 &lt;span style=&quot;font-size:9.8px; background:#090d16; color:#38bdf8; border:1px solid #38bdf8; padding:2px 8px; border-radius:10px; font-weight:700; white-space:nowrap;&quot;&gt;                     Match: High Water (88%) / Poor Climate (24%)                 &lt;/span&gt;             &lt;/div&gt;             &lt;div style=&quot;font-weight: 800; font-size: 13.8px;&quot;&gt;Central Mawrth Channel – Paleo-Acid Water &amp; Climate&lt;/div&gt;             &lt;div style=&quot;font-size: 10.8px; opacity: 0.92; margin-top:2px;&quot;&gt;Noachian–Hesperian outflow vs. hyperarid modern Mars&lt;/div&gt;         &lt;/div&gt;         &lt;div style=&quot;padding: 10px 13px; background: #ffffff; border: 1px solid #cbd5e1; border-top: none; border-radius: 0 0 12px 12px;&quot;&gt;                  &lt;svg viewBox=&quot;0 0 360 110&quot; width=&quot;100%&quot; style=&quot;background:#0f172a; border-radius:9px; margin-bottom:9px; border:1px solid #334155;&quot;&gt;       &lt;text x=&quot;12&quot; y=&quot;16&quot; fill=&quot;#38bdf8&quot; font-size=&quot;10&quot; font-weight=&quot;bold&quot; font-family=&quot;sans-serif&quot;&gt;HYDROGEOCHEMICAL &amp;amp; THERMAL CONTRAST (THEMIS/MOLA)&lt;/text&gt;       &lt;text x=&quot;14&quot; y=&quot;35&quot; fill=&quot;#cbd5e1&quot; font-size=&quot;8.6&quot; font-family=&quot;sans-serif&quot;&gt;AMD Acidity:&lt;/text&gt;       &lt;rect x=&quot;122&quot; y=&quot;25&quot; width=&quot;224&quot; height=&quot;13&quot; rx=&quot;4&quot; fill=&quot;#1e293b&quot;/&gt;       &lt;rect x=&quot;122&quot; y=&quot;25&quot; width=&quot;48&quot; height=&quot;13&quot; rx=&quot;4&quot; fill=&quot;#ef4444&quot;/&gt;       &lt;text x=&quot;176&quot; y=&quot;35&quot; fill=&quot;#fca5a5&quot; font-size=&quot;8.3&quot; font-weight=&quot;bold&quot; font-family=&quot;sans-serif&quot;&gt;pH &amp;lt; 2.5 (Fe, Cu, Zn, Al)&lt;/text&gt;       &lt;text x=&quot;14&quot; y=&quot;58&quot; fill=&quot;#cbd5e1&quot; font-size=&quot;8.6&quot; font-family=&quot;sans-serif&quot;&gt;Wales (Modern):&lt;/text&gt;       &lt;rect x=&quot;122&quot; y=&quot;48&quot; width=&quot;224&quot; height=&quot;13&quot; rx=&quot;4&quot; fill=&quot;#1e293b&quot;/&gt;       &lt;rect x=&quot;208&quot; y=&quot;48&quot; width=&quot;50&quot; height=&quot;13&quot; rx=&quot;4&quot; fill=&quot;#10b981&quot;/&gt;       &lt;text x=&quot;128&quot; y=&quot;58&quot; fill=&quot;#a7f3d0&quot; font-size=&quot;8&quot; font-family=&quot;sans-serif&quot;&gt;0 °C to +20 °C (Temperate oceanic)&lt;/text&gt;       &lt;text x=&quot;14&quot; y=&quot;81&quot; fill=&quot;#cbd5e1&quot; font-size=&quot;8.6&quot; font-family=&quot;sans-serif&quot;&gt;Mars THEMIS:&lt;/text&gt;       &lt;rect x=&quot;122&quot; y=&quot;71&quot; width=&quot;224&quot; height=&quot;13&quot; rx=&quot;4&quot; fill=&quot;#1e293b&quot;/&gt;       &lt;rect x=&quot;124&quot; y=&quot;71&quot; width=&quot;136&quot; height=&quot;13&quot; rx=&quot;4&quot; fill=&quot;#0284c7&quot;/&gt;       &lt;text x=&quot;129&quot; y=&quot;81&quot; fill=&quot;#fff&quot; font-size=&quot;8&quot; font-family=&quot;sans-serif&quot;&gt;-125 °C to +20 °C (TI: 220–440 tiu)&lt;/text&gt;       &lt;text x=&quot;14&quot; y=&quot;99&quot; fill=&quot;#7dd3fc&quot; font-size=&quot;8&quot; font-family=&quot;sans-serif&quot;&gt;MOLA Elevation: -3,200 m to -2,100 m (~1,100 m canyon incision)&lt;/text&gt;     &lt;/svg&gt;                  &lt;div&gt;Channel floor carved by ancient acidic runoff; currently hyperarid (-125 °C to +20 °C) beneath a thin CO₂ atmosphere.&lt;/div&gt;             &lt;div style=&quot;margin-top:8px; background:#f1f5f9; border:1px solid #cbd5e1; border-radius:7px; padding:7px 9px; font-size:10.6px; color:#0f172a;&quot;&gt;                 &lt;div style=&quot;font-weight:800; color:#0369a1; margin-bottom:2px; text-transform:uppercase; font-size:9.3px;&quot;&gt;🛰️ Cross-Planetary Telemetry Fusion (MRO / THEMIS / MOLA ↔ Field)&lt;/div&gt;                 &lt;b&gt;MOLA + THEMIS:&lt;/b&gt; Elevation -3,200 m (~1,100 m relief); diurnal ΔT &amp;gt; 100 K.&lt;br&gt;&lt;b&gt;Parys Mtn Analog:&lt;/b&gt; Hyperacid &lt;b&gt;Dyffryn Adda&lt;/b&gt; stream (pH &amp;lt; 2.5, Fe-Cu-Zn-Al).             &lt;/div&gt;             &lt;div style=&quot;margin-top:7px; padding-top:5px; border-top:1px dashed #cbd5e1; font-size:10px; color:#64748b; display:flex; justify-content:space-between; flex-wrap:wrap; gap:4px;&quot;&gt;                 &lt;span&gt;&lt;b&gt;Source:&lt;/b&gt; MGS MOLA / Odyssey THEMIS / PubMed&lt;/span&gt;                 &lt;span style=&quot;color:#00B4D8; font-weight:700;&quot;&gt;● Color-Synced&lt;/span&gt;             &lt;/div&gt;         &lt;/div&gt;     &lt;/div&gt;     &lt;/div&gt;`)[0];
+                popup_12816a2b791ad3440884c02382e1233b.setContent(html_9623f862d6f6449b64f4fe93b5cb38e7);
+            
+        
+
+        circle_marker_2a3f6c1edeb264963fb10130c8164721.bindPopup(popup_12816a2b791ad3440884c02382e1233b)
+        ;
+
+        
+    
+    
+            circle_marker_2a3f6c1edeb264963fb10130c8164721.bindTooltip(
+                `&lt;div&gt;
+                     [Water Chemistry &amp; Climate] Central Mawrth Channel – Paleo-Acid Water &amp; Climate
+                 &lt;/div&gt;`,
+                {
+  &quot;sticky&quot;: true,
+}
+            );
+        
+    
+            feature_group_90ede6860ec8ce5ed8ace56087a40e92.addTo(map_22bfc861fa1f887a6c5ef1c25a6ccc59);
+        
+    
+            var feature_group_126af11e0494449289fa67a04ed82c19 = L.featureGroup(
+                {
+}
+            );
+        
+    
+            var circle_marker_dda7b37582ba753d7b8bb871e74d850b = L.circleMarker(
+                [22.75, -18.02],
+                {&quot;bubblingMouseEvents&quot;: true, &quot;color&quot;: &quot;#ffffff&quot;, &quot;dashArray&quot;: null, &quot;dashOffset&quot;: null, &quot;fill&quot;: true, &quot;fillColor&quot;: &quot;#16A085&quot;, &quot;fillOpacity&quot;: 0.95, &quot;fillRule&quot;: &quot;evenodd&quot;, &quot;lineCap&quot;: &quot;round&quot;, &quot;lineJoin&quot;: &quot;round&quot;, &quot;opacity&quot;: 1.0, &quot;radius&quot;: 11.5, &quot;stroke&quot;: true, &quot;weight&quot;: 2.6}
+            ).addTo(feature_group_126af11e0494449289fa67a04ed82c19);
+        
+    
+        var popup_fe7132772f41df78595d435b7f617865 = L.popup({
+  &quot;maxWidth&quot;: 400,
+});
+
+        
+            
+                var html_cbcbaff40d4810d2c8601c0e8e9b8e5d = $(`&lt;div id=&quot;html_cbcbaff40d4810d2c8601c0e8e9b8e5d&quot; style=&quot;width: 100.0%; height: 100.0%;&quot;&gt;     &lt;div class=&quot;popup-card-root&quot; style=&quot;font-family: &#x27;Segoe UI&#x27;, system-ui, -apple-system, sans-serif; width: 385px; max-width: 100%; font-size: 12.4px; line-height: 1.45; color: #1e293b; box-shadow: 0 12px 28px rgba(0,0,0,0.48); border-radius: 12px; overflow: hidden;&quot;&gt;         &lt;div style=&quot;background: linear-gradient(135deg, #16A085, #0f172a); color: white; padding: 10px 13px;&quot;&gt;             &lt;div style=&quot;display:flex; justify-content:space-between; align-items:center; gap:6px; margin-bottom:4px; flex-wrap:wrap;&quot;&gt;                 &lt;span style=&quot;font-size:9.3px; text-transform:uppercase; letter-spacing:0.6px; background:rgba(255,255,255,0.2); padding:2px 8px; border-radius:10px; font-weight:700;&quot;&gt;                     Topography &amp; Robotics                 &lt;/span&gt;                 &lt;span style=&quot;font-size:9.8px; background:#090d16; color:#38bdf8; border:1px solid #38bdf8; padding:2px 8px; border-radius:10px; font-weight:700; white-space:nowrap;&quot;&gt;                     Match: High (85%) · Robotics (94%)                 &lt;/span&gt;             &lt;/div&gt;             &lt;div style=&quot;font-weight: 800; font-size: 13.8px;&quot;&gt;Southern Canyon Scarps – Topography &amp; Robotics&lt;/div&gt;             &lt;div style=&quot;font-size: 10.8px; opacity: 0.92; margin-top:2px;&quot;&gt;Steep 35°–60° slopes &amp; radiation-shielded cavities&lt;/div&gt;         &lt;/div&gt;         &lt;div style=&quot;padding: 10px 13px; background: #ffffff; border: 1px solid #cbd5e1; border-top: none; border-radius: 0 0 12px 12px;&quot;&gt;                  &lt;svg viewBox=&quot;0 0 360 110&quot; width=&quot;100%&quot; style=&quot;background:#0f172a; border-radius:9px; margin-bottom:9px; border:1px solid #334155;&quot;&gt;       &lt;text x=&quot;12&quot; y=&quot;16&quot; fill=&quot;#c084fc&quot; font-size=&quot;10&quot; font-weight=&quot;bold&quot; font-family=&quot;sans-serif&quot;&gt;SUBSURFACE ROBOTICS &amp;amp; MACHINERY CLEARANCE&lt;/text&gt;       &lt;rect x=&quot;18&quot; y=&quot;24&quot; width=&quot;122&quot; height=&quot;75&quot; rx=&quot;5&quot; fill=&quot;#1e1b2e&quot; stroke=&quot;#8E44AD&quot; stroke-width=&quot;1.2&quot;/&gt;       &lt;rect x=&quot;52&quot; y=&quot;24&quot; width=&quot;22&quot; height=&quot;55&quot; fill=&quot;#090d16&quot;/&gt;       &lt;rect x=&quot;34&quot; y=&quot;65&quot; width=&quot;88&quot; height=&quot;15&quot; fill=&quot;#090d16&quot;/&gt;       &lt;circle cx=&quot;63&quot; cy=&quot;45&quot; r=&quot;4&quot; fill=&quot;#38bdf8&quot;/&gt;       &lt;line x1=&quot;52&quot; y1=&quot;45&quot; x2=&quot;74&quot; y2=&quot;45&quot; stroke=&quot;#38bdf8&quot; stroke-width=&quot;1.5&quot;/&gt;       &lt;line x1=&quot;63&quot; y1=&quot;45&quot; x2=&quot;51&quot; y2=&quot;60&quot; stroke=&quot;#38bdf8&quot; stroke-width=&quot;0.8&quot; stroke-dasharray=&quot;2,2&quot;/&gt;       &lt;line x1=&quot;63&quot; y1=&quot;45&quot; x2=&quot;75&quot; y2=&quot;60&quot; stroke=&quot;#38bdf8&quot; stroke-width=&quot;0.8&quot; stroke-dasharray=&quot;2,2&quot;/&gt;       &lt;text x=&quot;79&quot; y=&quot;93&quot; text-anchor=&quot;middle&quot; fill=&quot;#e9d5ff&quot; font-size=&quot;7.8&quot; font-family=&quot;sans-serif&quot;&gt;Shaft &amp;gt;300m · 4.0m Portal&lt;/text&gt;       &lt;rect x=&quot;150&quot; y=&quot;24&quot; width=&quot;198&quot; height=&quot;75&quot; rx=&quot;6&quot; fill=&quot;#1e293b&quot; stroke=&quot;#8E44AD&quot; stroke-width=&quot;1&quot;/&gt;       &lt;text x=&quot;158&quot; y=&quot;38&quot; fill=&quot;#d8b4fe&quot; font-size=&quot;8.8&quot; font-weight=&quot;bold&quot; font-family=&quot;sans-serif&quot;&gt;Field Readiness: Excellent (94%)&lt;/text&gt;       &lt;text x=&quot;158&quot; y=&quot;52&quot; fill=&quot;#f1f5f9&quot; font-size=&quot;8.1&quot; font-family=&quot;sans-serif&quot;&gt;• Heavy rovers (3.0m footprint clearance)&lt;/text&gt;       &lt;text x=&quot;158&quot; y=&quot;66&quot; fill=&quot;#f1f5f9&quot; font-size=&quot;8.1&quot; font-family=&quot;sans-serif&quot;&gt;• GPS-denied LiDAR SLAM cave drones&lt;/text&gt;       &lt;text x=&quot;158&quot; y=&quot;80&quot; fill=&quot;#f1f5f9&quot; font-size=&quot;8.1&quot; font-family=&quot;sans-serif&quot;&gt;• Spectrometers &amp;amp; muon tomography&lt;/text&gt;     &lt;/svg&gt;                  &lt;div&gt;Abrasive bedrock scarps and subsurface overhangs protected from UV flux, ideal for rover mobility and autonomous subterranean drones.&lt;/div&gt;             &lt;div style=&quot;margin-top:8px; background:#f1f5f9; border:1px solid #cbd5e1; border-radius:7px; padding:7px 9px; font-size:10.6px; color:#0f172a;&quot;&gt;                 &lt;div style=&quot;font-weight:800; color:#0369a1; margin-bottom:2px; text-transform:uppercase; font-size:9.3px;&quot;&gt;🛰️ Cross-Planetary Telemetry Fusion (MRO / THEMIS / MOLA ↔ Field)&lt;/div&gt;                 &lt;b&gt;HiRISE (0.25 m/px) + MOLA:&lt;/b&gt; Unstructured talus aprons and GPS-denied canyon walls.&lt;br&gt;&lt;b&gt;Parys Mtn Analog:&lt;/b&gt; &lt;b&gt;Great Opencast&lt;/b&gt; benches (~100 m) &amp;amp; &lt;b&gt;Mountain Shaft&lt;/b&gt; (&amp;gt;300 m).             &lt;/div&gt;             &lt;div style=&quot;margin-top:7px; padding-top:5px; border-top:1px dashed #cbd5e1; font-size:10px; color:#64748b; display:flex; justify-content:space-between; flex-wrap:wrap; gap:4px;&quot;&gt;                 &lt;span&gt;&lt;b&gt;Source:&lt;/b&gt; MRO HiRISE / MOLA / Anglesey Mining&lt;/span&gt;                 &lt;span style=&quot;color:#16A085; font-weight:700;&quot;&gt;● Color-Synced&lt;/span&gt;             &lt;/div&gt;         &lt;/div&gt;     &lt;/div&gt;     &lt;/div&gt;`)[0];
+                popup_fe7132772f41df78595d435b7f617865.setContent(html_cbcbaff40d4810d2c8601c0e8e9b8e5d);
+            
+        
+
+        circle_marker_dda7b37582ba753d7b8bb871e74d850b.bindPopup(popup_fe7132772f41df78595d435b7f617865)
+        ;
+
+        
+    
+    
+            circle_marker_dda7b37582ba753d7b8bb871e74d850b.bindTooltip(
+                `&lt;div&gt;
+                     [Topography &amp; Robotics] Southern Canyon Scarps – Topography &amp; Robotics
+                 &lt;/div&gt;`,
+                {
+  &quot;sticky&quot;: true,
+}
+            );
+        
+    
+            feature_group_126af11e0494449289fa67a04ed82c19.addTo(map_22bfc861fa1f887a6c5ef1c25a6ccc59);
+        
+    
+            var feature_group_ee933460964da6499fafff0a60aa42fa = L.featureGroup(
+                {
+}
+            );
+        
+    
+            var circle_marker_13cd368b81cd543e3bbe76ffeac64ba4 = L.circleMarker(
+                [23.95, -18.35],
+                {&quot;bubblingMouseEvents&quot;: true, &quot;color&quot;: &quot;#ffffff&quot;, &quot;dashArray&quot;: null, &quot;dashOffset&quot;: null, &quot;fill&quot;: true, &quot;fillColor&quot;: &quot;#D35400&quot;, &quot;fillOpacity&quot;: 0.95, &quot;fillRule&quot;: &quot;evenodd&quot;, &quot;lineCap&quot;: &quot;round&quot;, &quot;lineJoin&quot;: &quot;round&quot;, &quot;opacity&quot;: 1.0, &quot;radius&quot;: 11.5, &quot;stroke&quot;: true, &quot;weight&quot;: 2.6}
+            ).addTo(feature_group_ee933460964da6499fafff0a60aa42fa);
+        
+    
+        var popup_0b148dd3e44093d2a2381f58de26555c = L.popup({
+  &quot;maxWidth&quot;: 400,
+});
+
+        
+            
+                var html_19a96aaf33465f870f15e22b14c6b5ab = $(`&lt;div id=&quot;html_19a96aaf33465f870f15e22b14c6b5ab&quot; style=&quot;width: 100.0%; height: 100.0%;&quot;&gt;     &lt;div class=&quot;popup-card-root&quot; style=&quot;font-family: &#x27;Segoe UI&#x27;, system-ui, -apple-system, sans-serif; width: 385px; max-width: 100%; font-size: 12.4px; line-height: 1.45; color: #1e293b; box-shadow: 0 12px 28px rgba(0,0,0,0.48); border-radius: 12px; overflow: hidden;&quot;&gt;         &lt;div style=&quot;background: linear-gradient(135deg, #D35400, #0f172a); color: white; padding: 10px 13px;&quot;&gt;             &lt;div style=&quot;display:flex; justify-content:space-between; align-items:center; gap:6px; margin-bottom:4px; flex-wrap:wrap;&quot;&gt;                 &lt;span style=&quot;font-size:9.3px; text-transform:uppercase; letter-spacing:0.6px; background:rgba(255,255,255,0.2); padding:2px 8px; border-radius:10px; font-weight:700;&quot;&gt;                     Geology &amp; Biosignatures                 &lt;/span&gt;                 &lt;span style=&quot;font-size:9.8px; background:#090d16; color:#38bdf8; border:1px solid #38bdf8; padding:2px 8px; border-radius:10px; font-weight:700; white-space:nowrap;&quot;&gt;                     Match: Very High (96%) · Biosignatures (98%)                 &lt;/span&gt;             &lt;/div&gt;             &lt;div style=&quot;font-weight: 800; font-size: 13.8px;&quot;&gt;East Canyon Wall (Facing Oyama) – Goethite &amp; Hematite&lt;/div&gt;             &lt;div style=&quot;font-size: 10.8px; opacity: 0.92; margin-top:2px;&quot;&gt;Massive ferric oxides &amp; biosignature preservation&lt;/div&gt;         &lt;/div&gt;         &lt;div style=&quot;padding: 10px 13px; background: #ffffff; border: 1px solid #cbd5e1; border-top: none; border-radius: 0 0 12px 12px;&quot;&gt;                  &lt;svg viewBox=&quot;0 0 360 116&quot; width=&quot;100%&quot; style=&quot;background:#0f172a; border-radius:9px; margin-bottom:9px; border:1px solid #334155;&quot;&gt;       &lt;defs&gt;         &lt;radialGradient id=&quot;gGoeth&quot; cx=&quot;35%&quot; cy=&quot;35%&quot; r=&quot;65%&quot;&gt;           &lt;stop offset=&quot;0%&quot; stop-color=&quot;#FDBA74&quot;/&gt;&lt;stop offset=&quot;40%&quot; stop-color=&quot;#C2410C&quot;/&gt;&lt;stop offset=&quot;100%&quot; stop-color=&quot;#431407&quot;/&gt;         &lt;/radialGradient&gt;         &lt;radialGradient id=&quot;gHem&quot; cx=&quot;30%&quot; cy=&quot;30%&quot; r=&quot;70%&quot;&gt;           &lt;stop offset=&quot;0%&quot; stop-color=&quot;#E2E8F0&quot;/&gt;&lt;stop offset=&quot;45%&quot; stop-color=&quot;#7F1D1D&quot;/&gt;&lt;stop offset=&quot;100%&quot; stop-color=&quot;#1E1B18&quot;/&gt;         &lt;/radialGradient&gt;       &lt;/defs&gt;       &lt;text x=&quot;12&quot; y=&quot;16&quot; fill=&quot;#FB923C&quot; font-size=&quot;10&quot; font-weight=&quot;bold&quot; font-family=&quot;sans-serif&quot;&gt;GOETHITE (α-FeOOH) &amp;amp; HEMATITE (Fe₂O₃)&lt;/text&gt;       &lt;circle cx=&quot;54&quot; cy=&quot;62&quot; r=&quot;21&quot; fill=&quot;url(#gGoeth)&quot; stroke=&quot;#ea580c&quot; stroke-width=&quot;0.8&quot;/&gt;       &lt;circle cx=&quot;78&quot; cy=&quot;68&quot; r=&quot;18&quot; fill=&quot;url(#gGoeth)&quot; stroke=&quot;#ea580c&quot; stroke-width=&quot;0.8&quot;/&gt;       &lt;circle cx=&quot;65&quot; cy=&quot;48&quot; r=&quot;16&quot; fill=&quot;url(#gGoeth)&quot; stroke=&quot;#fdba74&quot; stroke-width=&quot;0.8&quot;/&gt;       &lt;text x=&quot;66&quot; y=&quot;104&quot; text-anchor=&quot;middle&quot; fill=&quot;#cbd5e1&quot; font-size=&quot;8&quot; font-family=&quot;sans-serif&quot;&gt;Botryoidal Goethite&lt;/text&gt;       &lt;ellipse cx=&quot;136&quot; cy=&quot;60&quot; rx=&quot;21&quot; ry=&quot;14&quot; transform=&quot;rotate(-18 136 60)&quot; fill=&quot;url(#gHem)&quot; stroke=&quot;#cbd5e1&quot; stroke-width=&quot;0.8&quot;/&gt;       &lt;ellipse cx=&quot;145&quot; cy=&quot;71&quot; rx=&quot;17&quot; ry=&quot;10&quot; transform=&quot;rotate(12 145 71)&quot; fill=&quot;url(#gHem)&quot; stroke=&quot;#94a3b8&quot; stroke-width=&quot;0.8&quot;/&gt;       &lt;text x=&quot;140&quot; y=&quot;104&quot; text-anchor=&quot;middle&quot; fill=&quot;#cbd5e1&quot; font-size=&quot;8&quot; font-family=&quot;sans-serif&quot;&gt;Specular Hematite&lt;/text&gt;       &lt;rect x=&quot;176&quot; y=&quot;23&quot; width=&quot;172&quot; height=&quot;82&quot; rx=&quot;6&quot; fill=&quot;#1e293b&quot; stroke=&quot;#D35400&quot; stroke-width=&quot;1&quot;/&gt;       &lt;text x=&quot;184&quot; y=&quot;38&quot; fill=&quot;#fdba74&quot; font-size=&quot;8.8&quot; font-weight=&quot;bold&quot; font-family=&quot;sans-serif&quot;&gt;CRISM + THEMIS Fusion&lt;/text&gt;       &lt;text x=&quot;184&quot; y=&quot;52&quot; fill=&quot;#e2e8f0&quot; font-size=&quot;8.1&quot; font-family=&quot;sans-serif&quot;&gt;• Fe³⁺ Band: 0.86 – 0.92 µm&lt;/text&gt;       &lt;text x=&quot;184&quot; y=&quot;66&quot; fill=&quot;#e2e8f0&quot; font-size=&quot;8.1&quot; font-family=&quot;sans-serif&quot;&gt;• THEMIS TI: 310–440 tiu (bedrock)&lt;/text&gt;       &lt;text x=&quot;184&quot; y=&quot;80&quot; fill=&quot;#e2e8f0&quot; font-size=&quot;8.1&quot; font-family=&quot;sans-serif&quot;&gt;• UV &amp;amp; cosmic radiation shield&lt;/text&gt;       &lt;text x=&quot;184&quot; y=&quot;94&quot; fill=&quot;#fb923c&quot; font-size=&quot;8&quot; font-weight=&quot;bold&quot; font-family=&quot;sans-serif&quot;&gt;• Primary biosignature matrix&lt;/text&gt;     &lt;/svg&gt;                  &lt;div&gt;High-relief scarps enriched in &lt;b&gt;goethite and hematite&lt;/b&gt; that encapsulate and shield potential structural microfossils from surface radiation.&lt;/div&gt;             &lt;div style=&quot;margin-top:8px; background:#f1f5f9; border:1px solid #cbd5e1; border-radius:7px; padding:7px 9px; font-size:10.6px; color:#0f172a;&quot;&gt;                 &lt;div style=&quot;font-weight:800; color:#0369a1; margin-bottom:2px; text-transform:uppercase; font-size:9.3px;&quot;&gt;🛰️ Cross-Planetary Telemetry Fusion (MRO / THEMIS / MOLA ↔ Field)&lt;/div&gt;                 &lt;b&gt;CRISM + THEMIS:&lt;/b&gt; Fe³⁺ band (0.86–0.92 µm) + Thermal Inertia 310–440 tiu.&lt;br&gt;&lt;b&gt;Parys Mtn Analog:&lt;/b&gt; Goethite/hematite gossan &amp;amp; fossilized &lt;i&gt;Acidithiobacillus&lt;/i&gt; streamers.             &lt;/div&gt;             &lt;div style=&quot;margin-top:7px; padding-top:5px; border-top:1px dashed #cbd5e1; font-size:10px; color:#64748b; display:flex; justify-content:space-between; flex-wrap:wrap; gap:4px;&quot;&gt;                 &lt;span&gt;&lt;b&gt;Source:&lt;/b&gt; MRO CRISM / HiRISE / PMC Nature&lt;/span&gt;                 &lt;span style=&quot;color:#D35400; font-weight:700;&quot;&gt;● Color-Synced&lt;/span&gt;             &lt;/div&gt;         &lt;/div&gt;     &lt;/div&gt;     &lt;/div&gt;`)[0];
+                popup_0b148dd3e44093d2a2381f58de26555c.setContent(html_19a96aaf33465f870f15e22b14c6b5ab);
+            
+        
+
+        circle_marker_13cd368b81cd543e3bbe76ffeac64ba4.bindPopup(popup_0b148dd3e44093d2a2381f58de26555c)
+        ;
+
+        
+    
+    
+            circle_marker_13cd368b81cd543e3bbe76ffeac64ba4.bindTooltip(
+                `&lt;div&gt;
+                     [Geology &amp; Biosignatures] East Canyon Wall (Facing Oyama) – Goethite &amp; Hematite
+                 &lt;/div&gt;`,
+                {
+  &quot;sticky&quot;: true,
+}
+            );
+        
+    
+            feature_group_ee933460964da6499fafff0a60aa42fa.addTo(map_22bfc861fa1f887a6c5ef1c25a6ccc59);
+        
+    
+            var feature_group_4c9e19cd3e887e66e2f1cd12e1f6f5f9 = L.featureGroup(
+                {
+}
+            );
+        
+    
+            feature_group_4c9e19cd3e887e66e2f1cd12e1f6f5f9.addTo(map_22bfc861fa1f887a6c5ef1c25a6ccc59);
+        
+    
+            var layer_control_ccb8c31291d17d593dff82a70a302e16_layers = {
+                base_layers : {
+                    &quot;1. Orbital Color Satellite (NASA Viking)&quot; : tile_layer_740e37e8a27473680cd4016dc3108681,
+                    &quot;2. 3D Laser Altimetry (NASA MOLA)&quot; : tile_layer_550fb59761f1964ee6da9e3e33aaf386,
+                    &quot;3. B\u0026W Topographic Relief (MOLA)&quot; : tile_layer_65333f2336e5b0053500c2a311a4110c,
+                    &quot;4. Spectral Contrast Mode (MRO CRISM)&quot; : tile_layer_b3cc27f3c0227fc06c91966b97287f32,
+                },
+                overlays :  {
+                    &quot;0. Mawrth Vallis Channel, Craters \u0026 CRISM Box&quot; : feature_group_97607cb65bb0fa64b657ac4355797785,
+                    &quot;1. Mineralogy (Jarosite, Oxides, Sulfates, Silica)&quot; : feature_group_ad980e123207480c19f86e06ee8002a5,
+                    &quot;2. CRISM Phyllosilicates (Fe/Mg \u2192 Al) \u0026 Weathering&quot; : feature_group_e0ad00b1d41a3f02cf56d69df4605477,
+                    &quot;3. Paleo-Acid Water \u0026 Climate (THEMIS/MOLA)&quot; : feature_group_90ede6860ec8ce5ed8ace56087a40e92,
+                    &quot;4. Canyon Scarps \u0026 Topography (HiRISE/MOLA)&quot; : feature_group_126af11e0494449289fa67a04ed82c19,
+                    &quot;5. Habitability \u0026 Potential Biosignatures&quot; : feature_group_ee933460964da6499fafff0a60aa42fa,
+                    &quot;6. Subsurface \u0026 Robotic Operations&quot; : feature_group_4c9e19cd3e887e66e2f1cd12e1f6f5f9,
+                },
+            };
+            let layer_control_ccb8c31291d17d593dff82a70a302e16 = L.control.layers(
+                layer_control_ccb8c31291d17d593dff82a70a302e16_layers.base_layers,
+                layer_control_ccb8c31291d17d593dff82a70a302e16_layers.overlays,
+                {
+  &quot;position&quot;: &quot;topright&quot;,
+  &quot;collapsed&quot;: true,
+  &quot;autoZIndex&quot;: true,
+}
+            ).addTo(map_22bfc861fa1f887a6c5ef1c25a6ccc59);
+
+        
+&lt;/script&gt;
+&lt;/html&gt;"></iframe>
+    </div>
+  </div>
+
+  <!-- SINGLE-LINE SCROLLABLE NASA MULTI-SENSOR TELEMETRY STRIP -->
+  <div class="scroll-row" style="margin-top:14px;">
+    <div class="tele-card">
+      <div class="tele-title">🛰️ MRO CRISM (0.36–3.92 µm Spectroscopy)</div>
+      <div class="tele-val">Jarosite · Goethite · Silica · Smectites</div>
+      <div class="tele-desc">Resolves Fe³⁺ absorptions (0.43 &amp; 0.91 µm), hydrated silica doublet (2.21 µm), and Fe/Mg-clay (red) to Al-clay (blue) stratigraphy at <b>24.7° N, 339.5° E</b>.</div>
+    </div>
+    <div class="tele-card">
+      <div class="tele-title">📸 MRO HiRISE (0.25–0.30 m/px Stereo)</div>
+      <div class="tele-val">Fractured Strata &amp; 35°–60° Talus</div>
+      <div class="tele-desc">Confirms polygonally fractured light-toned outcrops and debris aprons matching the 100 m benches of <b>Great Opencast</b> (15–28 m machinery width).</div>
+    </div>
+    <div class="tele-card">
+      <div class="tele-title">🌡️ Odyssey THEMIS (Thermal Infrared)</div>
+      <div class="tele-val">TI: 220–440 tiu · ΔT: -125 °C to +20 °C</div>
+      <div class="tele-desc">Elevated thermal inertia along canyon walls confirms exposed consolidated bedrock free of thick dust, contrasting with temperate Wales (0–20 °C).</div>
+    </div>
+    <div class="tele-card">
+      <div class="tele-title">📐 MGS MOLA (Laser Altimetry DEM)</div>
+      <div class="tele-val">-3,200 m to -2,100 m (~1,100 m Relief)</div>
+      <div class="tele-desc">Maps outflow channel incision skirting <b>Oyama Crater (Ø 101 km)</b> and <b>McLaughlin Crater (Ø 92 km)</b>, cross-referenced with 10x vertical DEMs.</div>
+    </div>
+  </div>
+
+  <!-- EXPERT ANALYTICAL SUITE & SCROLLABLE 8-DIMENSION MATRIX -->
+  <div class="expert-section">
+    <div class="section-header">
+      <span class="section-title">📊 Expert Quantitative Evaluation Suite · Cross-Planetary Analog &amp; Geotechnical Profile</span>
+      <span style="font-size:11.3px; color:var(--text-muted);">Scroll horizontally across the 8 dimension cards below to inspect &amp; fly to each analog site</span>
+    </div>
+
+    <div class="expert-grid">
+      <div class="chart-panel">
+        <div class="chart-caption">1. Quantitative Analog Fidelity Index by Domain (%)</div>
+        <svg viewBox="0 0 460 205" width="100%" style="display:block;">
+          <line x1="155" y1="15" x2="155" y2="182" stroke="#64748b" stroke-width="1"/>
+          <line x1="225" y1="15" x2="225" y2="182" stroke="#475569" stroke-width="0.6" stroke-dasharray="3,3"/>
+          <line x1="295" y1="15" x2="295" y2="182" stroke="#475569" stroke-width="0.6" stroke-dasharray="3,3"/>
+          <line x1="365" y1="15" x2="365" y2="182" stroke="#475569" stroke-width="0.6" stroke-dasharray="3,3"/>
+          <line x1="435" y1="15" x2="435" y2="182" stroke="#475569" stroke-width="0.6" stroke-dasharray="3,3"/>
+          <text x="155" y="196" text-anchor="middle" fill="#94a3b8" font-size="9" font-family="sans-serif">0%</text>
+          <text x="225" y="196" text-anchor="middle" fill="#94a3b8" font-size="9" font-family="sans-serif">25%</text>
+          <text x="295" y="196" text-anchor="middle" fill="#94a3b8" font-size="9" font-family="sans-serif">50%</text>
+          <text x="365" y="196" text-anchor="middle" fill="#94a3b8" font-size="9" font-family="sans-serif">75%</text>
+          <text x="435" y="196" text-anchor="middle" fill="#94a3b8" font-size="9" font-family="sans-serif">100%</text>
+
+          <text x="148" y="28" text-anchor="end" fill="#94a3b8" font-size="9.5" font-weight="bold" font-family="sans-serif">Biology &amp; Biosignatures</text>
+          <rect x="155" y="19" width="274" height="11" rx="4" fill="#27AE60"/>
+          <text x="434" y="28" fill="#4ade80" font-size="9" font-weight="bold" font-family="sans-serif">98%</text>
+
+          <text x="148" y="49" text-anchor="end" fill="#94a3b8" font-size="9.5" font-weight="bold" font-family="sans-serif">Geology &amp; Mineralogy</text>
+          <rect x="155" y="40" width="269" height="11" rx="4" fill="#F1C40F"/>
+          <text x="429" y="49" fill="#eab308" font-size="9" font-weight="bold" font-family="sans-serif">96%</text>
+
+          <text x="148" y="70" text-anchor="end" fill="#94a3b8" font-size="9.5" font-weight="bold" font-family="sans-serif">Robotics &amp; Subsurface</text>
+          <rect x="155" y="61" width="263" height="11" rx="4" fill="#8E44AD"/>
+          <text x="423" y="70" fill="#c084fc" font-size="9" font-weight="bold" font-family="sans-serif">94%</text>
+
+          <text x="148" y="91" text-anchor="end" fill="#94a3b8" font-size="9.5" font-weight="bold" font-family="sans-serif">Caves &amp; Shafts (&gt;300m)</text>
+          <rect x="155" y="82" width="252" height="11" rx="4" fill="#9b59b6"/>
+          <text x="412" y="91" fill="#c084fc" font-size="9" font-weight="bold" font-family="sans-serif">90%</text>
+
+          <text x="148" y="112" text-anchor="end" fill="#94a3b8" font-size="9.5" font-weight="bold" font-family="sans-serif">Paleo-Water Chemistry</text>
+          <rect x="155" y="103" width="246" height="11" rx="4" fill="#00B4D8"/>
+          <text x="406" y="112" fill="#38bdf8" font-size="9" font-weight="bold" font-family="sans-serif">88%</text>
+
+          <text x="148" y="133" text-anchor="end" fill="#94a3b8" font-size="9.5" font-weight="bold" font-family="sans-serif">Topography &amp; Machinery</text>
+          <rect x="155" y="124" width="238" height="11" rx="4" fill="#16A085"/>
+          <text x="398" y="133" fill="#2dd4bf" font-size="9" font-weight="bold" font-family="sans-serif">85%</text>
+
+          <text x="148" y="154" text-anchor="end" fill="#94a3b8" font-size="9.5" font-weight="bold" font-family="sans-serif">Dust &amp; Weathering</text>
+          <rect x="155" y="145" width="230" height="11" rx="4" fill="#3498DB"/>
+          <text x="390" y="154" fill="#60a5fa" font-size="9" font-weight="bold" font-family="sans-serif">82%</text>
+
+          <text x="148" y="175" text-anchor="end" fill="#94a3b8" font-size="9.5" font-weight="bold" font-family="sans-serif">Modern Climate (Control)</text>
+          <rect x="155" y="166" width="67" height="11" rx="4" fill="#ef4444"/>
+          <text x="227" y="175" fill="#f87171" font-size="9" font-weight="bold" font-family="sans-serif">24% (Divergent)</text>
+        </svg>
+      </div>
+
+      <div class="chart-panel">
+        <div class="chart-caption">2. Expert Geochemical, Spectral &amp; Machinery Clearance Matrix</div>
+        <svg viewBox="0 0 460 205" width="100%" style="display:block;">
+          <rect x="6" y="8" width="448" height="22" rx="5" fill="#0f172a"/>
+          <text x="14" y="22" fill="#38bdf8" font-size="9" font-weight="bold" font-family="sans-serif">PARAMETER</text>
+          <text x="145" y="22" fill="#7dd3fc" font-size="9" font-weight="bold" font-family="sans-serif">PARYS MTN (FIELD)</text>
+          <text x="295" y="22" fill="#fca5a5" font-size="9" font-weight="bold" font-family="sans-serif">MAWRTH VALLIS (ORBITAL)</text>
+
+          <text x="14" y="46" fill="#94a3b8" font-size="8.8" font-weight="bold" font-family="sans-serif">Aqueous pH Window</text>
+          <text x="145" y="46" fill="#e2e8f0" font-size="8.8" font-family="sans-serif">pH 1.8 – 2.5 (Active AMD)</text>
+          <text x="295" y="46" fill="#e2e8f0" font-size="8.8" font-family="sans-serif">pH &lt; 3.5 (Noachian Jarosite)</text>
+          <line x1="6" y1="53" x2="454" y2="53" stroke="#334155" stroke-width="0.7"/>
+
+          <text x="14" y="69" fill="#94a3b8" font-size="8.8" font-weight="bold" font-family="sans-serif">Key VNIR/SWIR Bands</text>
+          <text x="145" y="69" fill="#e2e8f0" font-size="8.8" font-family="sans-serif">Fe³⁺ (0.43, 0.91 µm), Si-OH</text>
+          <text x="295" y="69" fill="#e2e8f0" font-size="8.8" font-family="sans-serif">CRISM 0.43, 0.91, 2.21, 2.26 µm</text>
+          <line x1="6" y1="76" x2="454" y2="76" stroke="#334155" stroke-width="0.7"/>
+
+          <text x="14" y="92" fill="#94a3b8" font-size="8.8" font-weight="bold" font-family="sans-serif">Topographic Relief</text>
+          <text x="145" y="92" fill="#e2e8f0" font-size="8.8" font-family="sans-serif">~100 m Opencast / 300 m Shaft</text>
+          <text x="295" y="92" fill="#e2e8f0" font-size="8.8" font-family="sans-serif">~1,100 m MOLA Canyon Wall</text>
+          <line x1="6" y1="99" x2="454" y2="99" stroke="#334155" stroke-width="0.7"/>
+
+          <text x="14" y="115" fill="#94a3b8" font-size="8.8" font-weight="bold" font-family="sans-serif">Machinery Clearance</text>
+          <text x="145" y="115" fill="#2dd4bf" font-size="8.8" font-weight="bold" font-family="sans-serif">15–28 m Benches / 4m Portals</text>
+          <text x="295" y="115" fill="#e2e8f0" font-size="8.8" font-family="sans-serif">Rover &amp; Drone Rated (HiRISE)</text>
+          <line x1="6" y1="122" x2="454" y2="122" stroke="#334155" stroke-width="0.7"/>
+
+          <text x="14" y="138" fill="#94a3b8" font-size="8.8" font-weight="bold" font-family="sans-serif">Thermal Regime</text>
+          <text x="145" y="138" fill="#e2e8f0" font-size="8.8" font-family="sans-serif">0 °C to +20 °C (Humid)</text>
+          <text x="295" y="138" fill="#e2e8f0" font-size="8.8" font-family="sans-serif">-125 °C to +20 °C (310–440 tiu)</text>
+          <line x1="6" y1="145" x2="454" y2="145" stroke="#334155" stroke-width="0.7"/>
+
+          <text x="14" y="161" fill="#94a3b8" font-size="8.8" font-weight="bold" font-family="sans-serif">Biosignature Host</text>
+          <text x="145" y="161" fill="#4ade80" font-size="8.8" font-weight="bold" font-family="sans-serif">Goethite / Jarosite Streamers</text>
+          <text x="295" y="161" fill="#4ade80" font-size="8.8" font-weight="bold" font-family="sans-serif">Ferric Oxyhydroxide Horizons</text>
+          <line x1="6" y1="168" x2="454" y2="168" stroke="#334155" stroke-width="0.7"/>
+
+          <text x="14" y="185" fill="#94a3b8" font-size="8.8" font-weight="bold" font-family="sans-serif">Navigation / Comms</text>
+          <text x="145" y="185" fill="#e2e8f0" font-size="8.8" font-family="sans-serif">GPS-Denied / High Metal EMI</text>
+          <text x="295" y="185" fill="#e2e8f0" font-size="8.8" font-family="sans-serif">Autonomous SLAM / Orbital Relay</text>
+        </svg>
+      </div>
+    </div>
+
+    <!-- Single-Line Horizontal Scrollable 8-Dimension Cards -->
+    <div class="scroll-row">
+      <div class="dim-card" style="border-left-color:#F1C40F;" onclick="compararPar(53.3837, -4.3403, 17, 24.62, -19.15, 7)">
+        <div class="dim-head"><span>1. Geology &amp; Mineralogy</span><span class="sim-pill">Very High (96%)</span></div>
+        <div class="dim-body"><b>Parys Mtn:</b> Kuroko VMS deposit rich in jarosite, anglesite, goethite, hematite, and quartz.<br><b>Mawrth Vallis:</b> Acid-sulfate alteration, ferric oxides, and hydrated silica along canyon bends.</div>
+      </div>
+
+      <div class="dim-card" style="border-left-color:#16A085;" onclick="compararPar(53.3877, -4.3459, 17, 22.75, -18.02, 7)">
+        <div class="dim-head"><span>2. Topography &amp; Machinery</span><span class="sim-pill">High (85%)</span></div>
+        <div class="dim-body"><b>Parys Mtn:</b> Great Opencast (~100 m), 35°–65° talus, and verified 15–28 m benches for heavy machinery.<br><b>Mawrth Vallis:</b> Steep outflow scarps and Oyama Crater rim walls (MOLA/HiRISE).</div>
+      </div>
+
+      <div class="dim-card" style="border-left-color:#00B4D8;" onclick="compararPar(53.3817, -4.3463, 17, 23.35, -18.18, 7)">
+        <div class="dim-head"><span>3. Temperature &amp; Climate</span><span class="sim-pill">Divergent (24%)</span></div>
+        <div class="dim-body"><b>Parys Mtn:</b> Temperate oceanic climate (0 °C to 20 °C) with high humidity and rainfall.<br><b>Mawrth Vallis:</b> Hyperarid cold Martian climate (-125 °C to 20 °C) with thin CO₂ atmosphere.</div>
+      </div>
+
+      <div class="dim-card" style="border-left-color:#00B4D8;" onclick="compararPar(53.3817, -4.3463, 17, 23.35, -18.18, 7)">
+        <div class="dim-head"><span>4. Water Chemistry &amp; Resources</span><span class="sim-pill">High · Early Mars (88%)</span></div>
+        <div class="dim-body"><b>Parys Mtn:</b> Hyperacid Mine Drainage (pH &lt; 2.5) saturated in dissolved Fe, Cu, Zn, and Al.<br><b>Mawrth Vallis:</b> Early acidic aqueous environments of the Noachian and Hesperian eras.</div>
+      </div>
+
+      <div class="dim-card" style="border-left-color:#3498DB;" onclick="compararPar(53.3845, -4.3392, 17, 24.82, -19.65, 7)">
+        <div class="dim-head"><span>5. Dust &amp; Weathering</span><span class="sim-pill">Medium-High (82%)</span></div>
+        <div class="dim-body"><b>Parys Mtn:</b> Aqueous leaching, ephemeral saline efflorescence, and sulfate dehydration.<br><b>Mawrth Vallis:</b> Sulfate dehydration cycles and Fe/Mg → Al phyllosilicate weathering profiles.</div>
+      </div>
+
+      <div class="dim-card" style="border-left-color:#27AE60;" onclick="compararPar(53.3811, -4.3447, 17, 23.95, -18.35, 7)">
+        <div class="dim-head"><span>6. Biology &amp; Biosignatures</span><span class="sim-pill">Exceptional (98%)</span></div>
+        <div class="dim-body"><b>Parys Mtn:</b> Acidophilic extremophiles (<i>Acidithiobacillus</i>, <i>Leptospirillum</i>) &amp; fossilized Fe-streamers.<br><b>Mawrth Vallis:</b> Extremophile habitability models and structural fossils in goethite/jarosite.</div>
+      </div>
+
+      <div class="dim-card" style="border-left-color:#8E44AD;" onclick="compararPar(53.3849, -4.3493, 17, 22.75, -18.02, 7)">
+        <div class="dim-head"><span>7. Caves &amp; Subsurface</span><span class="sim-pill">High (90%)</span></div>
+        <div class="dim-body"><b>Parys Mtn:</b> Deep vertical shafts (Mountain Shaft &gt;300 m) and underground haulage galleries.<br><b>Mawrth Vallis:</b> Subsurface cavities and cliff overhangs shielded from solar UV radiation.</div>
+      </div>
+
+      <div class="dim-card" style="border-left-color:#8E44AD;" onclick="compararPar(53.3849, -4.3493, 17, 22.75, -18.02, 7)">
+        <div class="dim-head"><span>8. Operations &amp; Robotics</span><span class="sim-pill">Excellent (94%)</span></div>
+        <div class="dim-body"><b>Parys Mtn:</b> Abrasive unstructured terrain, GPS-denied underground portals, high metal density.<br><b>Mawrth Vallis:</b> Rover mobility trials, Raman/VNIR spectrometers, SLAM drones &amp; muon tomography.</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+var crismActivo = false;
+var bwActivo = false;
+var temaActual = "dark";
+
+function actualizarEstadoDispositivo() {
+    var badge = document.getElementById("device-badge");
+    var w = window.innerWidth;
+    if (badge) {
+        if (w <= 600) badge.textContent = "📱 Mobile Adaptive";
+        else if (w <= 960) badge.textContent = "📟 Tablet Adaptive";
+        else badge.textContent = "🖥️ Desktop Adaptive";
+    }
+    var offBadge = document.getElementById("offline-badge");
+    if (offBadge) {
+        offBadge.textContent = navigator.onLine ? "🟢 Online · Standalone HTML" : "🟠 Offline Mode · Vector Assets";
+    }
+}
+window.addEventListener("resize", actualizarEstadoDispositivo);
+window.addEventListener("online", actualizarEstadoDispositivo);
+window.addEventListener("offline", actualizarEstadoDispositivo);
+actualizarEstadoDispositivo();
+
+function setMapLayout(mode) {
+    var grid = document.getElementById("maps-grid");
+    grid.classList.remove("stacked", "single-earth", "single-mars");
+    if (mode !== "desktop") grid.classList.add(mode);
+
+    ["tab-both", "tab-earth", "tab-mars"].forEach(function(id) {
+        var el = document.getElementById(id);
+        if (el) el.classList.remove("btn-active");
+    });
+    if (mode === "stacked") document.getElementById("tab-both").classList.add("btn-active");
+    if (mode === "single-earth") document.getElementById("tab-earth").classList.add("btn-active");
+    if (mode === "single-mars") document.getElementById("tab-mars").classList.add("btn-active");
+
+    setTimeout(function() {
+        var ft = document.getElementById("frame-tierra");
+        var fm = document.getElementById("frame-marte");
+        if (ft && ft.contentWindow) ft.contentWindow.postMessage({ type: "INVALIDATE_SIZE" }, "*");
+        if (fm && fm.contentWindow) fm.contentWindow.postMessage({ type: "INVALIDATE_SIZE" }, "*");
+    }, 120);
+}
+
+function toggleTheme() {
+    temaActual = (temaActual === "dark") ? "light" : "dark";
+    document.body.setAttribute("data-theme", temaActual);
+    var btn = document.getElementById("btn-theme");
+    btn.innerHTML = (temaActual === "dark") ? "☀️ Sun Mode" : "🌙 Dark Mode";
+}
+
+function toggleBW() {
+    bwActivo = !bwActivo;
+    var btn = document.getElementById("btn-bw-mode");
+    btn.classList.toggle("btn-active", bwActivo);
+    var ft = document.getElementById("frame-tierra");
+    var fm = document.getElementById("frame-marte");
+    if (ft && ft.contentWindow) ft.contentWindow.postMessage({ type: "TOGGLE_BW", enabled: bwActivo }, "*");
+    if (fm && fm.contentWindow) fm.contentWindow.postMessage({ type: "TOGGLE_BW", enabled: bwActivo }, "*");
+}
+
+function toggleCrism() {
+    crismActivo = !crismActivo;
+    var btn = document.getElementById("btn-crism-mode");
+    btn.classList.toggle("btn-active", crismActivo);
+    var fm = document.getElementById("frame-marte");
+    if (fm && fm.contentWindow) {
+        fm.contentWindow.postMessage({ type: "TOGGLE_CRISM", enabled: crismActivo }, "*");
+    }
+}
+
+function compararPar(latT, lonT, zoomT, latM, lonM, zoomM) {
+    if (window.innerWidth <= 960) {
+        var grid = document.getElementById("maps-grid");
+        if (grid.classList.contains("single-earth") || grid.classList.contains("single-mars")) {
+            setMapLayout("stacked");
+        }
+    }
+    var ft = document.getElementById("frame-tierra");
+    var fm = document.getElementById("frame-marte");
+    if (ft && ft.contentWindow) {
+        ft.contentWindow.postMessage({ type: "FLY_TO_ANALOG", lat: latT, lon: lonT, zoom: zoomT }, "*");
+    }
+    if (fm && fm.contentWindow) {
+        fm.contentWindow.postMessage({ type: "FLY_TO_ANALOG", lat: latM, lon: lonM, zoom: zoomM }, "*");
+    }
+}
+
+function resetVista() {
+    compararPar(53.3854, -4.3452, 15, 23.65, -19.15, 6);
+}
+</script>
+</body>
+</html>
